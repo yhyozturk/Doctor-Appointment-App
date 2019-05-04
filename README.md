@@ -1,10 +1,8 @@
-# fast_turtle_v2
-
 This is a school project written wiht Flutter.
 
-## Getting Started
+# Getting Started
 
-Initial commit includes:
+## Initial commit includes:
 
 *Welcome page design,
 *Register page design,
