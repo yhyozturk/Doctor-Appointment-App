@@ -69,9 +69,9 @@ class RegisterPageState extends State with ValidationMixin {
         });
   }
 
-  void alrtFail(BuildContext context) {
+  static void alrtFail(BuildContext context) {
     var alertDialog = AlertDialog(
-      title: Text("Kayıt Başarısız"),
+      title: Text("Giriş Başarısız"),
       content: Text("Hatalı yada eksik bilgi girdiniz"),
     );
 

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fast_turtle_v2/dbHelper/searchData.dart';
 import 'package:fast_turtle_v2/models/doktorModel.dart';
 import 'package:fast_turtle_v2/models/userModel.dart';
 import 'package:fast_turtle_v2/screens/registerPage.dart';
@@ -21,11 +22,14 @@ class WelcomePageState extends State
   final adminFormKey = GlobalKey<FormState>();
   final user = User();
   final doktor = Doktor();
+  Future<QuerySnapshot> gelenVeri;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    this.gelenVeri =
+        Firestore.instance.collection('tblKullanici').getDocuments();
   }
 
   @override
@@ -54,12 +58,12 @@ class WelcomePageState extends State
         children: <Widget>[
           SingleChildScrollView(
               child: Column(children: <Widget>[
-            pagePlanWithForm(kimlikNoField(0), sifreField(0), "Hoşgeldiniz",
-                kullaniciFormKey),
+            pagePlanWithForm(kimlikNoField(0, context), sifreField(0),
+                "Hoşgeldiniz", kullaniciFormKey),
             registerButton()
           ])),
-          pagePlanWithForm(
-              kimlikNoField(1), sifreField(1), "Doktor Girişi", doktorFormKey),
+          pagePlanWithForm(kimlikNoField(1, context), sifreField(1),
+              "Doktor Girişi", doktorFormKey),
           pagePlanWithForm(
               adminNicknameField(), sifreField(2), "Admin Girişi", adminFormKey)
         ],
@@ -78,7 +82,6 @@ class WelcomePageState extends State
 
   Container registerButton() {
     return Container(
-      // padding: EdgeInsets.only(top: 5.0),
       child: FlatButton(
         child: Text(
           "Kayıt Ol",
@@ -165,42 +168,22 @@ class WelcomePageState extends State
         ));
   }
 
-  Widget kimlikNoField(int tabIndex) {
+  Widget kimlikNoField(int tabIndex, BuildContext context) {
     return TextFormField(
       decoration: InputDecoration(labelText: "T.C. Kimlik Numarası:"),
-      validator: (String value) {
-        var user =  Firestore.instance
-            .collection('tblKullanici')
-            .where('tcKimlikNo', isEqualTo: value)
-            .getDocuments();
-
-            // TODO: Login doğrulama yapılamadı
+      onSaved: (String value) {
+        if (tabIndex == 0) {
+          user.kimlikNo = value;
+        } else {
+          doktor.kimlikNo = value;
+        }
       },
-      // onSaved: (String value){
-      //   if (tabIndex==0) {
-      //     user.kimlikNo=value;
-      //   } else {
-      //     doktor.kimlikNo=value;
-      //   }
-      // },
     );
   }
 
   Widget sifreField(int tabIndex) {
     return TextFormField(
       decoration: InputDecoration(labelText: "Şifre:"),
-      // validator: validateSifreforLogin,
-      // onSaved: (String value){
-      //   if (tabIndex==0) {
-      //     user.sifre=value;
-      //   }
-      //   else if(tabIndex==1) {
-      //     doktor.sifre=value;
-      //   }else{
-      //     print("Admin için şifre");
-      //     //TODO: Admin model implemente edilecek
-      //   }
-      // },
     );
   }
 
@@ -209,6 +192,22 @@ class WelcomePageState extends State
       decoration: InputDecoration(labelText: "Kullanıcı Adı:"),
       validator: validateAdmin,
     );
+  }
+
+  bool kimlikNoDogrula = false;
+  var tempSearchStore = [];
+
+  initiateSearch(girilenId) {
+    SearchService().searchById(girilenId).then((QuerySnapshot docs) {
+      for (int i = 0; i < docs.documents.length; i++) {
+        tempSearchStore.add(docs.documents[i].data);
+      }
+    });
+    for (var item in tempSearchStore) {
+      if (item['kimlikNo'] == girilenId) {
+        kimlikNoDogrula = true;
+      }
+    }
   }
 
   Widget loginButton(GlobalKey<FormState> formKey) {
@@ -222,7 +221,10 @@ class WelcomePageState extends State
         textColor: Colors.blueAccent,
         splashColor: Colors.cyanAccent,
         onPressed: () {
-          if (formKey.currentState.validate()) {
+          kimlikNoDogrula=false;
+          formKey.currentState.save();
+          initiateSearch(user.kimlikNo);
+          if (kimlikNoDogrula) {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => UserHomePage()));
           }
