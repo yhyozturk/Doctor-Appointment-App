@@ -1,29 +1,26 @@
-class User {
+class Doktor {
   String kimlikNo;
   String adi;
   String soyadi;
-  String dogumTarihi;
-  String cinsiyet;
   String sifre;
-  String dogumYeri;
+  int bolumId;
+  int hastaneId;
 
-  User(
+  Doktor(
       {this.kimlikNo,
       this.adi,
       this.soyadi,
-      this.dogumTarihi,
-      this.cinsiyet,
       this.sifre,
-      this.dogumYeri});
+      this.bolumId,
+      this.hastaneId});
 
-  User.fromJson(Map<String, dynamic> json) {
+  Doktor.fromJson(Map<String, dynamic> json) {
     kimlikNo = json['kimlikNo'];
     adi = json['adi'];
     soyadi = json['soyadi'];
-    dogumTarihi = json['dogumTarihi'];
-    cinsiyet = json['cinsiyet'];
     sifre = json['sifre'];
-    dogumYeri = json["dogumYeri"];
+    bolumId = json['bolumId'];
+    hastaneId = json['hastaneId'];
   }
 
   Map<String, dynamic> toJson() {
@@ -31,14 +28,9 @@ class User {
     data['kimlikNo'] = this.kimlikNo;
     data['adi'] = this.adi;
     data['soyadi'] = this.soyadi;
-    data['dogumTarihi'] = this.dogumTarihi;
-    data['cinsiyet'] = this.cinsiyet;
     data['sifre'] = this.sifre;
-    data['dogumYeri'] = this.dogumYeri;
+    data['bolumId'] = this.bolumId;
+    data['hastaneId'] = this.hastaneId;
     return data;
-  }
-
-  addNewUser(){
-
   }
 }

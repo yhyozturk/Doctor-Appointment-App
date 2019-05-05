@@ -1,4 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fast_turtle_v2/models/doktorModel.dart';
+import 'package:fast_turtle_v2/models/userModel.dart';
 import 'package:fast_turtle_v2/screens/registerPage.dart';
+import 'package:fast_turtle_v2/screens/userHomePage.dart';
 import 'package:flutter/material.dart';
 import 'package:fast_turtle_v2/mixins/validation_mixin.dart';
 
@@ -15,6 +19,8 @@ class WelcomePageState extends State
   final kullaniciFormKey = GlobalKey<FormState>();
   final doktorFormKey = GlobalKey<FormState>();
   final adminFormKey = GlobalKey<FormState>();
+  final user = User();
+  final doktor = Doktor();
 
   @override
   void initState() {
@@ -48,14 +54,14 @@ class WelcomePageState extends State
         children: <Widget>[
           SingleChildScrollView(
               child: Column(children: <Widget>[
-            pagePlanWithForm(
-                kimlikNoField(), sifreField(), "Hoşgeldiniz", kullaniciFormKey),
+            pagePlanWithForm(kimlikNoField(0), sifreField(0), "Hoşgeldiniz",
+                kullaniciFormKey),
             registerButton()
           ])),
           pagePlanWithForm(
-              kimlikNoField(), sifreField(), "Doktor Girişi", doktorFormKey),
+              kimlikNoField(1), sifreField(1), "Doktor Girişi", doktorFormKey),
           pagePlanWithForm(
-              adminNicknameField(), sifreField(), "Admin Girişi", adminFormKey)
+              adminNicknameField(), sifreField(2), "Admin Girişi", adminFormKey)
         ],
       ),
     );
@@ -159,16 +165,42 @@ class WelcomePageState extends State
         ));
   }
 
-  Widget kimlikNoField() {
+  Widget kimlikNoField(int tabIndex) {
     return TextFormField(
       decoration: InputDecoration(labelText: "T.C. Kimlik Numarası:"),
-      validator: validateTCNo,
+      validator: (String value) {
+        var user =  Firestore.instance
+            .collection('tblKullanici')
+            .where('tcKimlikNo', isEqualTo: value)
+            .getDocuments();
+
+            // TODO: Login doğrulama yapılamadı
+      },
+      // onSaved: (String value){
+      //   if (tabIndex==0) {
+      //     user.kimlikNo=value;
+      //   } else {
+      //     doktor.kimlikNo=value;
+      //   }
+      // },
     );
   }
 
-  Widget sifreField() {
+  Widget sifreField(int tabIndex) {
     return TextFormField(
       decoration: InputDecoration(labelText: "Şifre:"),
+      // validator: validateSifreforLogin,
+      // onSaved: (String value){
+      //   if (tabIndex==0) {
+      //     user.sifre=value;
+      //   }
+      //   else if(tabIndex==1) {
+      //     doktor.sifre=value;
+      //   }else{
+      //     print("Admin için şifre");
+      //     //TODO: Admin model implemente edilecek
+      //   }
+      // },
     );
   }
 
@@ -191,7 +223,8 @@ class WelcomePageState extends State
         splashColor: Colors.cyanAccent,
         onPressed: () {
           if (formKey.currentState.validate()) {
-            print("İşlem tamam");
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => UserHomePage()));
           }
         },
       ),

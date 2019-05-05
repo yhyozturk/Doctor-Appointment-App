@@ -1,6 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fast_turtle_v2/models/userModel.dart';
 import 'package:flutter/material.dart';
 import 'package:fast_turtle_v2/mixins/validation_mixin.dart';
-import 'package:fast_turtle_v2/screens/welcomePage.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -11,7 +12,7 @@ class RegisterPage extends StatefulWidget {
 
 class RegisterPageState extends State with ValidationMixin {
   final registerFormKey = GlobalKey<FormState>();
-  WelcomePageState _welcomePageState = WelcomePageState();
+  final user = User();
 
   var genders = ["Kadın", "Erkek"];
   var selectedGenders = "Kadın";
@@ -41,8 +42,8 @@ class RegisterPageState extends State with ValidationMixin {
                 key: registerFormKey,
                 child: Column(
                   children: <Widget>[
-                    _welcomePageState.kimlikNoField(),
-                    _welcomePageState.sifreField(),
+                    kimlikNoField(),
+                    sifreField(),
                     firstNameField(),
                     lastNameField(),
                     placeofBirthField(),
@@ -85,10 +86,32 @@ class RegisterPageState extends State with ValidationMixin {
     Navigator.pop(context, result);
   }
 
+  Widget kimlikNoField() {
+    return TextFormField(
+      decoration: InputDecoration(labelText: "T.C. Kimlik Numarası:"),
+      validator: validateTCNo,
+      onSaved: (String value) {
+        user.kimlikNo = value;
+      },
+    );
+  }
+
+  Widget sifreField() {
+    return TextFormField(
+      decoration: InputDecoration(labelText: "Şifre:"),
+      onSaved: (String value) {
+        user.sifre = value;
+      },
+    );
+  }
+
   Widget firstNameField() {
     return TextFormField(
       decoration: InputDecoration(labelText: "Ad"),
       validator: validateFirstName,
+      onSaved: (String value) {
+        user.adi = value;
+      },
     );
   }
 
@@ -96,12 +119,18 @@ class RegisterPageState extends State with ValidationMixin {
     return TextFormField(
       decoration: InputDecoration(labelText: "Soyad"),
       validator: validateLastName,
+      onSaved: (String value) {
+        user.soyadi = value;
+      },
     );
   }
 
   Widget placeofBirthField() {
     return TextFormField(
       decoration: InputDecoration(labelText: "Doğum Yeri"),
+      onSaved: (String value) {
+        user.dogumYeri = value;
+      },
     );
   }
 
@@ -128,6 +157,7 @@ class RegisterPageState extends State with ValidationMixin {
               onChanged: (String tiklanan) {
                 setState(() {
                   this.selectedGenders = tiklanan;
+                  user.cinsiyet = selectedGenders;
                 });
               },
             ),
@@ -148,7 +178,8 @@ class RegisterPageState extends State with ValidationMixin {
             child: Text(raisedButtonText),
             onPressed: () {
               _selectDate(context).then((result) => setState(() {
-                    raisedButtonText = dogumTarihi.toString();
+                    raisedButtonText = dogumTarihi.toString().substring(0, 10);
+                    user.dogumTarihi = dogumTarihi.toString().substring(0, 10);
                   }));
             },
           )
@@ -168,7 +199,9 @@ class RegisterPageState extends State with ValidationMixin {
         ),
         onPressed: () {
           if (registerFormKey.currentState.validate()) {
+            registerFormKey.currentState.save();
             basicPop(context, true);
+            saveUser(user);
           }
           //  else {
           //   alrtFail(context);
@@ -176,5 +209,17 @@ class RegisterPageState extends State with ValidationMixin {
         },
       ),
     );
+  }
+
+  void saveUser(User user) {
+    Firestore.instance.collection('tblKullanici').document().setData({
+      'ad': user.adi,
+      'soyad': user.soyadi,
+      'kimlikNo': user.kimlikNo,
+      'cinsiyet': user.cinsiyet,
+      'dogumTarihi': user.dogumTarihi,
+      'dogumYeri': user.dogumYeri,
+      'sifre': user.sifre
+    });
   }
 }
