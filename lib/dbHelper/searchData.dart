@@ -15,7 +15,7 @@ class DataSearchState extends State {
   }
 
 
-
+  // this page still usesless.
  String kimLikNo;
 
 
