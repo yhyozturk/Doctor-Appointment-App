@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class User {
   String kimlikNo;
   String adi;
@@ -6,6 +8,8 @@ class User {
   String cinsiyet;
   String sifre;
   String dogumYeri;
+
+  DocumentReference reference;
 
   User(
       {this.kimlikNo,
@@ -26,6 +30,19 @@ class User {
     dogumYeri = json["dogumYeri"];
   }
 
+  User.fromMap(Map<String, dynamic> map, {this.reference})
+      :kimlikNo = map["kimlikNo"],
+      sifre = map["sifre"],
+      adi = map["ad"],
+      soyadi = map["soyad"],
+      dogumYeri = map["dogumYeri"],
+      dogumTarihi = map["dogumTarihi"],
+      cinsiyet = map["cinsiyet"];
+
+  User.fromSnapshot(DocumentSnapshot snapshot)
+      : this.fromMap(snapshot.data, reference:snapshot.reference);
+
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['kimlikNo'] = this.kimlikNo;
@@ -36,9 +53,5 @@ class User {
     data['sifre'] = this.sifre;
     data['dogumYeri'] = this.dogumYeri;
     return data;
-  }
-
-  addNewUser(){
-
   }
 }

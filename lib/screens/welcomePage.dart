@@ -20,7 +20,7 @@ class WelcomePageState extends State
   final kullaniciFormKey = GlobalKey<FormState>();
   final doktorFormKey = GlobalKey<FormState>();
   final adminFormKey = GlobalKey<FormState>();
-  final user = User();
+  User user = User();
   final doktor = Doktor();
   Future<QuerySnapshot> gelenVeri;
 
@@ -46,10 +46,16 @@ class WelcomePageState extends State
           tabs: <Widget>[
             Text(
               "Kullanıcı",
-              style: TextStyle(fontSize: 15.0),
+              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
             ),
-            Text("Doktor"),
-            Text("Admin")
+            Text(
+              "Doktor",
+              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              "Admin",
+              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+            )
           ],
         ),
       ),
@@ -57,11 +63,13 @@ class WelcomePageState extends State
         controller: _tabController,
         children: <Widget>[
           SingleChildScrollView(
-              child: Column(children: <Widget>[
-            pagePlanWithForm(kimlikNoField(0, context), sifreField(0),
-                "Hoşgeldiniz", kullaniciFormKey),
-            registerButton()
-          ])),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                pagePlanWithForm(kimlikNoField(0, context), sifreField(0),
+                    "Hoşgeldiniz", kullaniciFormKey),
+                registerButton()
+              ])),
           pagePlanWithForm(kimlikNoField(1, context), sifreField(1),
               "Doktor Girişi", doktorFormKey),
           pagePlanWithForm(
@@ -141,7 +149,7 @@ class WelcomePageState extends State
       value,
       textAlign: TextAlign.center,
       textDirection: TextDirection.ltr,
-      style: TextStyle(fontSize: 40.0),
+      style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.bold),
     );
   }
 
@@ -153,6 +161,7 @@ class WelcomePageState extends State
           child: Form(
             key: formKey,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
                   alignment: Alignment.topCenter,
@@ -170,7 +179,11 @@ class WelcomePageState extends State
 
   Widget kimlikNoField(int tabIndex, BuildContext context) {
     return TextFormField(
-      decoration: InputDecoration(labelText: "T.C. Kimlik Numarası:"),
+      decoration: InputDecoration(
+        labelText: "T.C. Kimlik Numarası:",
+        labelStyle: TextStyle(
+            fontSize: 17.0, fontWeight: FontWeight.bold, color: Colors.grey),
+      ),
       onSaved: (String value) {
         if (tabIndex == 0) {
           user.kimlikNo = value;
@@ -183,7 +196,12 @@ class WelcomePageState extends State
 
   Widget sifreField(int tabIndex) {
     return TextFormField(
-      decoration: InputDecoration(labelText: "Şifre:"),
+      decoration: InputDecoration(
+        labelText: "Şifre:",
+        labelStyle: TextStyle(
+            fontSize: 17.0, fontWeight: FontWeight.bold, color: Colors.grey),
+      ),
+      obscureText: true,
     );
   }
 
@@ -197,10 +215,12 @@ class WelcomePageState extends State
   bool kimlikNoDogrula = false;
   var tempSearchStore = [];
 
-  initiateSearch(girilenId) {
-    SearchService().searchById(girilenId).then((QuerySnapshot docs) {
+  //girilen kimlik numarasına kayıtlı bir kullanıcı olup olmadıpını arayan metot...
+  initiateSearch(girilenId, int tabIndex) {
+    SearchService().searchById(girilenId, tabIndex).then((QuerySnapshot docs) {
       for (int i = 0; i < docs.documents.length; i++) {
         tempSearchStore.add(docs.documents[i].data);
+        user = User.fromMap(docs.documents[i].data);
       }
     });
     for (var item in tempSearchStore) {
@@ -221,12 +241,18 @@ class WelcomePageState extends State
         textColor: Colors.blueAccent,
         splashColor: Colors.cyanAccent,
         onPressed: () {
-          kimlikNoDogrula=false;
+          kimlikNoDogrula = false;
           formKey.currentState.save();
-          initiateSearch(user.kimlikNo);
+          if (formKey == kullaniciFormKey) {
+            initiateSearch(user.kimlikNo, 0);
+          } else if (formKey == doktorFormKey) {
+            initiateSearch(user.kimlikNo, 1);
+          }
+
+          //TODO: Sayfa tasarımları yapılınca hangi sayfaya yönlendirileceği burada implemente edilecek...
           if (kimlikNoDogrula) {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => UserHomePage()));
+                MaterialPageRoute(builder: (context) => UserHomePage(user)));
           }
         },
       ),
