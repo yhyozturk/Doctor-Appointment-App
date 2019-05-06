@@ -9,4 +9,3 @@ Initial commit includes:
 *Welcome page design,
 *Register page design,
 *Some validation code(validation_mixin.dart)
-*
