@@ -46,7 +46,22 @@ class SearchService {
         .getDocuments();
   }
 
+  searchSectionsByHospitalId(int hospitalId) {
+    return Firestore.instance
+        .collection("tblBolum")
+        .where('hastaneId', isEqualTo: hospitalId)
+        .getDocuments();
+  }
+
   getHospitals() {
     return Firestore.instance.collection("tblHastane").getDocuments();
+  }
+
+  getSections() {
+    return Firestore.instance.collection("tblBolum").getDocuments();
+  }
+
+  getDoctors() {
+    return Firestore.instance.collection("tblDoktor").getDocuments();
   }
 }

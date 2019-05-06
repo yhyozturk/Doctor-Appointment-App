@@ -3,12 +3,12 @@ import 'package:fast_turtle_v2/dbHelper/searchData.dart';
 import 'package:fast_turtle_v2/models/doktorModel.dart';
 import 'package:flutter/material.dart';
 
-class makeAppointment extends StatefulWidget {
+class MakeAppointment extends StatefulWidget {
   @override
-  makeAppointmentState createState() => makeAppointmentState();
+  MakeAppointmentState createState() => MakeAppointmentState();
 }
 
-class makeAppointmentState extends State<makeAppointment> {
+class MakeAppointmentState extends State<MakeAppointment> {
 
   var hospitalNames = [];
   var sectionNames = [];

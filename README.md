@@ -29,3 +29,8 @@ This is a school project written wiht Flutter.
 
 *Hospital and section model added,
 *"Add doctor" method implementation for admin
+
+## 06_May_2019 v5
+
+*MakeAppointmentPage design,(have some needed),
+*Add a search function on dbHelper
