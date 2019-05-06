@@ -84,7 +84,8 @@ class UserHomePageState extends State {
                       ),
                       _buildAttributeRow(
                           "T.C. Kimlik Numarası", kullanici.kimlikNo),
-                      _buildAttributeRow("Cinsiyet", kullanici.cinsiyet),
+                      _buildAttributeRow(
+                          "Cinsiyet", kullanici.cinsiyet.toString()),
                       _buildAttributeRow("Doğum Yeri", kullanici.dogumYeri),
                       _buildAttributeRow("Doğum Tarihi", kullanici.dogumTarihi),
                       SizedBox(

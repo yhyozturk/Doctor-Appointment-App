@@ -24,3 +24,8 @@ This is a school project written wiht Flutter.
 *Admin page design,
 *Admin model added,
 *Fixed some code
+
+## 06_May_2019 v3
+
+*Hospital and section model added,
+*"Add doctor" method implementation for admin

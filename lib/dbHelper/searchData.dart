@@ -38,4 +38,11 @@ class SearchService {
           .getDocuments();
     }
   }
+
+  searchHospitalByName(String value){
+    return Firestore.instance.collection("tblHastane").where('hastaneAdi',isEqualTo: value).getDocuments();
+  }
+  getHospitals(){
+    return Firestore.instance.collection("tblHastane").getDocuments();
+  }
 }
