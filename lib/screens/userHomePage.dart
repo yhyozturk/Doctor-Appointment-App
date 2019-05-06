@@ -210,6 +210,7 @@ class UserHomePageState extends State {
       ),
     );
   }
+
   _cikisYapButonu() {
     return Container(
       padding: EdgeInsets.all(1.0),

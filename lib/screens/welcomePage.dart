@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fast_turtle_v2/dbHelper/searchData.dart';
+import 'package:fast_turtle_v2/models/adminModel.dart';
 import 'package:fast_turtle_v2/models/doktorModel.dart';
 import 'package:fast_turtle_v2/models/userModel.dart';
+import 'package:fast_turtle_v2/screens/adminHomePage.dart';
 import 'package:fast_turtle_v2/screens/registerPage.dart';
 import 'package:fast_turtle_v2/screens/userHomePage.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +23,8 @@ class WelcomePageState extends State
   final doktorFormKey = GlobalKey<FormState>();
   final adminFormKey = GlobalKey<FormState>();
   User user = User();
-  final doktor = Doktor();
+  Doktor doktor = Doktor();
+  Admin admin = Admin();
   Future<QuerySnapshot> gelenVeri;
 
   @override
@@ -209,6 +212,9 @@ class WelcomePageState extends State
     return TextFormField(
       decoration: InputDecoration(labelText: "Kullanıcı Adı:"),
       validator: validateAdmin,
+      onSaved: (String value) {
+        admin.nickname = value;
+      },
     );
   }
 
@@ -216,15 +222,22 @@ class WelcomePageState extends State
   var tempSearchStore = [];
 
   //girilen kimlik numarasına kayıtlı bir kullanıcı olup olmadıpını arayan metot...
-  initiateSearch(girilenId, int tabIndex) {
+  initiateSearch(girilenId, int tabIndex, String searchWhere) {
     SearchService().searchById(girilenId, tabIndex).then((QuerySnapshot docs) {
       for (int i = 0; i < docs.documents.length; i++) {
         tempSearchStore.add(docs.documents[i].data);
-        user = User.fromMap(docs.documents[i].data);
+
+        if (tabIndex == 0) {
+          user = User.fromMap(docs.documents[i].data);
+        } else if (tabIndex == 1) {
+          doktor = Doktor.fromMap(docs.documents[i].data);
+        } else if (tabIndex == 2) {
+          admin = Admin.fromMap(docs.documents[i].data);
+        }
       }
     });
     for (var item in tempSearchStore) {
-      if (item['kimlikNo'] == girilenId) {
+      if (item[searchWhere] == girilenId) {
         kimlikNoDogrula = true;
       }
     }
@@ -244,15 +257,28 @@ class WelcomePageState extends State
           kimlikNoDogrula = false;
           formKey.currentState.save();
           if (formKey == kullaniciFormKey) {
-            initiateSearch(user.kimlikNo, 0);
-          } else if (formKey == doktorFormKey) {
-            initiateSearch(user.kimlikNo, 1);
-          }
+            initiateSearch(user.kimlikNo, 0, 'kimlikNo');
 
-          //TODO: Sayfa tasarımları yapılınca hangi sayfaya yönlendirileceği burada implemente edilecek...
-          if (kimlikNoDogrula) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => UserHomePage(user)));
+            if (kimlikNoDogrula) {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => UserHomePage(user)));
+            }
+          } else if (formKey == doktorFormKey) {
+            initiateSearch(doktor.kimlikNo, 1, 'kimlikNo');
+
+            if (kimlikNoDogrula) {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => UserHomePage(user)));
+            }
+          } else if (formKey == adminFormKey) {
+            initiateSearch(admin.nickname, 2, 'nickname');
+
+            if (kimlikNoDogrula) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AdminHomePage(admin)));
+            }
           }
         },
       ),

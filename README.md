@@ -19,3 +19,9 @@ This is a school project written wiht Flutter.
 
 *User home page design,
 *Data transfer algorithm between 2 screens
+
+## 06_May_2019 v2
+
+*Admin page design,
+*Admin model added,
+*Fixed some code
