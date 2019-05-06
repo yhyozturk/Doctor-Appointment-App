@@ -34,3 +34,8 @@ This is a school project written wiht Flutter.
 
 *MakeAppointmentPage design,(have some needed),
 *Add a search function on dbHelper
+
+## 07_May_2019 v1
+
+*Some changes on addDoctorPage but it has some bugs
+*TODO : fix the bugs

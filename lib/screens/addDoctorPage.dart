@@ -13,8 +13,11 @@ class AddDoctor extends StatefulWidget {
 
 class AddDoctorState extends State with ValidationMixin {
   List<String> hospitalNames = [];
+  List<String> sectionNames = [];
   Doktor doktor;
   var selectedHospital;
+  var selectedSection;
+  int tempId;
 
   @override
   void initState() {
@@ -46,7 +49,11 @@ class AddDoctorState extends State with ValidationMixin {
                       SizedBox(
                         height: 10.0,
                       ),
-                      chooserButton()
+                      chooserButton(),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      choosSectionButton()
                     ],
                   ),
                 ),
@@ -75,7 +82,7 @@ class AddDoctorState extends State with ValidationMixin {
           labelStyle: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold)),
       obscureText: true,
       onSaved: (String value) {
-        doktor..sifre = value;
+        doktor.sifre = value;
       },
     );
   }
@@ -112,6 +119,18 @@ class AddDoctorState extends State with ValidationMixin {
     });
   }
 
+  initiateSections() async {
+    if (this.tempId != null) {
+     await SearchService()
+          .searchSectionsByHospitalId(this.tempId)
+          .then((QuerySnapshot docs) {
+        for (var i = 0; i < docs.documents.length; i++) {
+          sectionNames.add(docs.documents[i]['bolumAdi'].toString());
+        }
+      });
+    }
+  }
+
   Widget chooserButton() {
     return Container(
         padding: EdgeInsets.only(top: 13.0),
@@ -120,11 +139,15 @@ class AddDoctorState extends State with ValidationMixin {
             Container(
               padding: EdgeInsets.only(right: 25.0),
               child: Text(
-                "Hastaneler: ",
+                "Hastaneler : ",
                 style: TextStyle(fontSize: 19.0),
               ),
             ),
+            SizedBox(
+              width: 5.0,
+            ),
             DropdownButton<String>(
+              hint: Text("Tıkla Seç"),
               items: hospitalNames.map((String hastaneler) {
                 return DropdownMenuItem<String>(
                   value: hastaneler,
@@ -134,10 +157,54 @@ class AddDoctorState extends State with ValidationMixin {
               value: selectedHospital,
               onChanged: (String tiklanan) {
                 setState(() {
+                  SearchService()
+                      .searchHospitalByName(selectedHospital)
+                      .then((QuerySnapshot docs) {
+                    tempId = docs.documents[0]['hastaneId'];
+                  });
                   if (tiklanan == null) {
                     this.selectedHospital = hospitalNames[0];
                   } else {
                     this.selectedHospital = tiklanan;
+                  }
+                   initiateSections();
+                });
+              },
+            ),
+          ],
+        ));
+  }
+
+  Widget choosSectionButton() {
+    return Container(
+        padding: EdgeInsets.only(top: 8.0),
+        child: Row(
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(right: 25.0),
+              child: Text(
+                "Bölümler     : ",
+                style: TextStyle(fontSize: 19.0),
+              ),
+            ),
+            SizedBox(
+              width: 5.0,
+            ),
+            DropdownButton<String>(
+              hint: Text("Tıkla Seç"),
+              items: sectionNames.map((String bolumler) {
+                return DropdownMenuItem<String>(
+                  value: bolumler,
+                  child: Text(bolumler),
+                );
+              }).toList(),
+              value: selectedSection,
+              onChanged: (String tiklanan) {
+                setState(() {
+                  if (tiklanan == null) {
+                    this.selectedSection = sectionNames[0];
+                  } else {
+                    this.selectedSection = tiklanan;
                   }
                 });
               },
