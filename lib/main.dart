@@ -7,7 +7,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Fast-Anadolu Project',
+      title: 'Fast-Anadolu',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
