@@ -12,9 +12,9 @@ class AddDoctor extends StatefulWidget {
 }
 
 class AddDoctorState extends State with ValidationMixin {
-  var hospitalNames = [];
+  List<String> hospitalNames = [];
   Doktor doktor;
-  var selectedHospital ;
+  var selectedHospital;
 
   @override
   void initState() {
@@ -25,31 +25,35 @@ class AddDoctorState extends State with ValidationMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Doktor Ekle",
-          style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
+        appBar: AppBar(
+          title: Text(
+            "Doktor Ekle",
+            style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
+          ),
         ),
-      ),
-      body: Column(
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(top: 20.0, left: 9.0, right: 9.0),
-            child: Form(
-              child: Column(
-                children: <Widget>[
-                  _kimlikNoField(),
-                  _passwordField(),
-                  _nameField(),
-                  _surnameField(),
-                  chooserButton()
-                ],
-              ),
-            ),
-          )
-        ],
-      ),
-    );
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.only(top: 20.0, left: 9.0, right: 9.0),
+                child: Form(
+                  child: Column(
+                    children: <Widget>[
+                      _kimlikNoField(),
+                      _passwordField(),
+                      _nameField(),
+                      _surnameField(),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      chooserButton()
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        ));
   }
 
   Widget _kimlikNoField() {
@@ -121,7 +125,7 @@ class AddDoctorState extends State with ValidationMixin {
               ),
             ),
             DropdownButton<String>(
-              items: hospitalNames.map((hastaneler) {
+              items: hospitalNames.map((String hastaneler) {
                 return DropdownMenuItem<String>(
                   value: hastaneler,
                   child: Text(hastaneler),

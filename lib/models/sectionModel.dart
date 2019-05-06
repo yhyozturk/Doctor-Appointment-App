@@ -25,7 +25,7 @@ class Section {
 
   Section.fromMap(Map<String, dynamic> map, {this.reference})
       : bolumAdi = map["bolumAdi"],
-      bolumId = map["bolumId"],
+        bolumId = map["bolumId"],
         hastaneId = map["hastaneId"];
 
   Section.fromSnapshot(DocumentSnapshot snapshot)
