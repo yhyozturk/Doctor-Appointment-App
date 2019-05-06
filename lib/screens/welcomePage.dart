@@ -1,4 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fast_turtle_v2/dbHelper/searchData.dart';
+import 'package:fast_turtle_v2/models/adminModel.dart';
+import 'package:fast_turtle_v2/models/doktorModel.dart';
+import 'package:fast_turtle_v2/models/userModel.dart';
+import 'package:fast_turtle_v2/screens/adminHomePage.dart';
 import 'package:fast_turtle_v2/screens/registerPage.dart';
+import 'package:fast_turtle_v2/screens/userHomePage.dart';
 import 'package:flutter/material.dart';
 import 'package:fast_turtle_v2/mixins/validation_mixin.dart';
 
@@ -15,11 +22,17 @@ class WelcomePageState extends State
   final kullaniciFormKey = GlobalKey<FormState>();
   final doktorFormKey = GlobalKey<FormState>();
   final adminFormKey = GlobalKey<FormState>();
+  User user = User();
+  Doktor doktor = Doktor();
+  Admin admin = Admin();
+  Future<QuerySnapshot> gelenVeri;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    this.gelenVeri =
+        Firestore.instance.collection('tblKullanici').getDocuments();
   }
 
   @override
@@ -36,10 +49,16 @@ class WelcomePageState extends State
           tabs: <Widget>[
             Text(
               "Kullanıcı",
-              style: TextStyle(fontSize: 15.0),
+              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
             ),
-            Text("Doktor"),
-            Text("Admin")
+            Text(
+              "Doktor",
+              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              "Admin",
+              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+            )
           ],
         ),
       ),
@@ -47,15 +66,17 @@ class WelcomePageState extends State
         controller: _tabController,
         children: <Widget>[
           SingleChildScrollView(
-              child: Column(children: <Widget>[
-            pagePlanWithForm(
-                kimlikNoField(), sifreField(), "Hoşgeldiniz", kullaniciFormKey),
-            registerButton()
-          ])),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                pagePlanWithForm(kimlikNoField(0, context), sifreField(0),
+                    "Hoşgeldiniz", kullaniciFormKey),
+                registerButton()
+              ])),
+          pagePlanWithForm(kimlikNoField(1, context), sifreField(1),
+              "Doktor Girişi", doktorFormKey),
           pagePlanWithForm(
-              kimlikNoField(), sifreField(), "Doktor Girişi", doktorFormKey),
-          pagePlanWithForm(
-              adminNicknameField(), sifreField(), "Admin Girişi", adminFormKey)
+              adminNicknameField(), sifreField(2), "Admin Girişi", adminFormKey)
         ],
       ),
     );
@@ -72,7 +93,6 @@ class WelcomePageState extends State
 
   Container registerButton() {
     return Container(
-      // padding: EdgeInsets.only(top: 5.0),
       child: FlatButton(
         child: Text(
           "Kayıt Ol",
@@ -132,7 +152,7 @@ class WelcomePageState extends State
       value,
       textAlign: TextAlign.center,
       textDirection: TextDirection.ltr,
-      style: TextStyle(fontSize: 40.0),
+      style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.bold),
     );
   }
 
@@ -144,6 +164,7 @@ class WelcomePageState extends State
           child: Form(
             key: formKey,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
                   alignment: Alignment.topCenter,
@@ -159,16 +180,31 @@ class WelcomePageState extends State
         ));
   }
 
-  Widget kimlikNoField() {
+  Widget kimlikNoField(int tabIndex, BuildContext context) {
     return TextFormField(
-      decoration: InputDecoration(labelText: "T.C. Kimlik Numarası:"),
-      validator: validateTCNo,
+      decoration: InputDecoration(
+        labelText: "T.C. Kimlik Numarası:",
+        labelStyle: TextStyle(
+            fontSize: 17.0, fontWeight: FontWeight.bold, color: Colors.grey),
+      ),
+      onSaved: (String value) {
+        if (tabIndex == 0) {
+          user.kimlikNo = value;
+        } else {
+          doktor.kimlikNo = value;
+        }
+      },
     );
   }
 
-  Widget sifreField() {
+  Widget sifreField(int tabIndex) {
     return TextFormField(
-      decoration: InputDecoration(labelText: "Şifre:"),
+      decoration: InputDecoration(
+        labelText: "Şifre:",
+        labelStyle: TextStyle(
+            fontSize: 17.0, fontWeight: FontWeight.bold, color: Colors.grey),
+      ),
+      obscureText: true,
     );
   }
 
@@ -176,7 +212,35 @@ class WelcomePageState extends State
     return TextFormField(
       decoration: InputDecoration(labelText: "Kullanıcı Adı:"),
       validator: validateAdmin,
+      onSaved: (String value) {
+        admin.nickname = value;
+      },
     );
+  }
+
+  bool kimlikNoDogrula = false;
+  var tempSearchStore = [];
+
+  //girilen kimlik numarasına kayıtlı bir kullanıcı olup olmadıpını arayan metot...
+  initiateSearch(girilenId, int tabIndex, String searchWhere) {
+    SearchService().searchById(girilenId, tabIndex).then((QuerySnapshot docs) {
+      for (int i = 0; i < docs.documents.length; i++) {
+        tempSearchStore.add(docs.documents[i].data);
+
+        if (tabIndex == 0) {
+          user = User.fromMap(docs.documents[i].data);
+        } else if (tabIndex == 1) {
+          doktor = Doktor.fromMap(docs.documents[i].data);
+        } else if (tabIndex == 2) {
+          admin = Admin.fromMap(docs.documents[i].data);
+        }
+      }
+    });
+    for (var item in tempSearchStore) {
+      if (item[searchWhere] == girilenId) {
+        kimlikNoDogrula = true;
+      }
+    }
   }
 
   Widget loginButton(GlobalKey<FormState> formKey) {
@@ -190,8 +254,31 @@ class WelcomePageState extends State
         textColor: Colors.blueAccent,
         splashColor: Colors.cyanAccent,
         onPressed: () {
-          if (formKey.currentState.validate()) {
-            print("İşlem tamam");
+          kimlikNoDogrula = false;
+          formKey.currentState.save();
+          if (formKey == kullaniciFormKey) {
+            initiateSearch(user.kimlikNo, 0, 'kimlikNo');
+
+            if (kimlikNoDogrula) {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => UserHomePage(user)));
+            }
+          } else if (formKey == doktorFormKey) {
+            initiateSearch(doktor.kimlikNo, 1, 'kimlikNo');
+
+            if (kimlikNoDogrula) {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => UserHomePage(user)));
+            }
+          } else if (formKey == adminFormKey) {
+            initiateSearch(admin.nickname, 2, 'nickname');
+
+            if (kimlikNoDogrula) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AdminHomePage(admin)));
+            }
           }
         },
       ),

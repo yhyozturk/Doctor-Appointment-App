@@ -12,6 +12,7 @@ class ValidationMixin {
     }
     return null;
   }
+
   String validateLastName(String value) {
     if (value.length < 2) {
       return "Soyadı en az iki karakter olmalıdır";
