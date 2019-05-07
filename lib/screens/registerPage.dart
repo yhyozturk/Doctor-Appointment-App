@@ -15,7 +15,7 @@ class RegisterPageState extends State with ValidationMixin {
   final user = User();
 
   var genders = ["Kadın", "Erkek"];
-  var selectedGenders = "Kadın";
+  String selectedGenders = "Kadın";
   var dogumTarihi;
   var raisedButtonText = "Tıkla ve Seç";
 
@@ -156,7 +156,11 @@ class RegisterPageState extends State with ValidationMixin {
               value: selectedGenders,
               onChanged: (String tiklanan) {
                 setState(() {
-                  this.selectedGenders = tiklanan;
+                 if (tiklanan == null) {
+                    this.selectedGenders = "Kadın";
+                 }else{
+                   this.selectedGenders = tiklanan;
+                 }
                   user.cinsiyet = selectedGenders;
                 });
               },

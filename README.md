@@ -1,6 +1,5 @@
-This is a school project written wiht Flutter.
-
 # Getting Started
+This is a school project written wiht Flutter.
 
 ## Initial commit includes
 
@@ -25,3 +24,18 @@ This is a school project written wiht Flutter.
 *Admin page design,
 *Admin model added,
 *Fixed some code
+
+## 06_May_2019 v3
+
+*Hospital and section model added,
+*"Add doctor" method implementation for admin
+
+## 06_May_2019 v5
+
+*MakeAppointmentPage design,(have some needed),
+*Add a search function on dbHelper
+
+## 07_May_2019 v1
+
+*Some changes on addDoctorPage but it has some bugs
+*TODO : fix the bugs

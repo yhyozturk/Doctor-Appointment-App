@@ -1,4 +1,6 @@
 import 'package:fast_turtle_v2/models/adminModel.dart';
+import 'package:fast_turtle_v2/screens/addDoctorPage.dart';
+import 'package:fast_turtle_v2/screens/addHospitalPage.dart';
 import 'package:flutter/material.dart';
 
 class AdminHomePage extends StatefulWidget {
@@ -128,18 +130,18 @@ class _AdminHomePageState extends State<AdminHomePage> {
     return Container(
       child: Column(
         children: <Widget>[
-          _butonOlustur("Hastane Güncelle"),
+          _butonOlustur("Hastane Güncelle",0),
           SizedBox(
             height: 5.0,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              _butonOlustur("Hastane Ekle"),
+              _butonOlustur("Hastane Ekle",1),
               SizedBox(
                 width: 10.0,
               ),
-              _butonOlustur("Hastane Sil"),
+              _butonOlustur("Hastane Sil",2),
             ],
           )
         ],
@@ -151,18 +153,18 @@ class _AdminHomePageState extends State<AdminHomePage> {
     return Container(
       child: Column(
         children: <Widget>[
-          _butonOlustur("Bölüm Güncelle"),
+          _butonOlustur("Bölüm Güncelle",3),
           SizedBox(
             height: 5.0,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              _butonOlustur("Bölüm Ekle"),
+              _butonOlustur("Bölüm Ekle",4),
               SizedBox(
                 width: 10.0,
               ),
-              _butonOlustur("Bölüm Sil"),
+              _butonOlustur("Bölüm Sil",5),
             ],
           )
         ],
@@ -174,18 +176,18 @@ class _AdminHomePageState extends State<AdminHomePage> {
     return Container(
       child: Column(
         children: <Widget>[
-          _butonOlustur("Doktor Güncelle"),
+          _butonOlustur("Doktor Güncelle",6),
           SizedBox(
             height: 5.0,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              _butonOlustur("Doktor Ekle"),
+              _butonOlustur("Doktor Ekle",7),
               SizedBox(
                 width: 10.0,
               ),
-              _butonOlustur("Doktor Sil"),
+              _butonOlustur("Doktor Sil",8),
             ],
           )
         ],
@@ -197,18 +199,18 @@ class _AdminHomePageState extends State<AdminHomePage> {
     return Container(
       child: Column(
         children: <Widget>[
-          _butonOlustur("Randevu Aç/Kapat"),
+          _butonOlustur("Randevu Aç/Kapat",9),
           SizedBox(
             height: 5.0,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              _butonOlustur("Admin Ekle"),
+              _butonOlustur("Admin Ekle",10),
               SizedBox(
                 width: 10.0,
               ),
-              _butonOlustur("Çıkış Yap"),
+              _butonOlustur("Çıkış Yap",11),
             ],
           )
         ],
@@ -216,7 +218,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
     );
   }
 
-  _butonOlustur(String textMessage) {
+  _butonOlustur(String textMessage, int buttonIndex) {
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,
@@ -226,7 +228,47 @@ class _AdminHomePageState extends State<AdminHomePage> {
           textMessage,
           style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
         ),
-        onPressed: () {},
+        onPressed: () {
+          switch (buttonIndex) {
+            case 0:
+              
+              break;
+            case 1:Navigator.push(context, MaterialPageRoute(builder: (context)=>AddHospital()));
+
+              break;
+            case 2:
+
+              break;
+            case 3:
+
+              break;
+            case 4:
+
+              break;
+            case 5:
+
+              break;
+            case 6:
+
+              break;
+            case 7:Navigator.push(context, MaterialPageRoute(builder: (context)=>AddDoctor()));
+
+              break;
+            case 8:
+
+              break;
+            case 9:
+
+              break;
+            case 10:
+
+              break;
+            case 11:
+
+              break;
+            default:
+          }
+        },
       ),
     );
   }
