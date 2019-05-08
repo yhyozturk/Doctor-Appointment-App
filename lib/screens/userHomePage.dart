@@ -1,4 +1,6 @@
 import 'package:fast_turtle_v2/models/userModel.dart';
+import 'package:fast_turtle_v2/screens/appointmentHistory.dart';
+import 'package:fast_turtle_v2/screens/makeAppointment.dart';
 import 'package:flutter/material.dart';
 
 class UserHomePage extends StatefulWidget {
@@ -169,7 +171,7 @@ class UserHomePageState extends State {
           "Randevu Al",
           style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
         ),
-        onPressed: () {},
+        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=> MakeAppointment())),
       ),
     );
   }
@@ -188,7 +190,7 @@ class UserHomePageState extends State {
           "Randevu Geçmişi",
           style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
         ),
-        onPressed: () {},
+        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=> AppointmentHistory())),
       ),
     );
   }
