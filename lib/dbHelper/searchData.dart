@@ -64,4 +64,15 @@ class SearchService {
   getDoctors() {
     return Firestore.instance.collection("tblDoktor").getDocuments();
   }
+  
+  getAppointments() {
+    return Firestore.instance.collection("tblRandevuGecmisi").getDocuments();
+  }
+
+  searchAppointmentsByHastaTCKN(String tckn) {
+    return Firestore.instance
+        .collection("tblRandevuGecmisi")
+        .where('hastaTCKN', isEqualTo: tckn)
+        .getDocuments();
+  }
 }

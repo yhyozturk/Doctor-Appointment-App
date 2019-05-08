@@ -39,3 +39,11 @@ This is a school project written wiht Flutter.
 
 *Some changes on addDoctorPage but it has some bugs
 *TODO : fix the bugs
+
+## 08_May_2019 v1
+
+*Added to MakeAppointment Page
+*TODO : code the backend
+
+*Added to List of Appointment History Page
+*TODO : dev to backend
