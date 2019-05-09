@@ -51,3 +51,6 @@ This is a school project written wiht Flutter.
 ## 09_May_2019 v1
 *Added to deldata and updateData class
 *TODO: The function should be tested in updateData
+
+## 09_05_2019 v1.1
+*added to addSection function
