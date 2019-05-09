@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fast_turtle_v2/dbHelper/searchData.dart';
-import 'package:fast_turtle_v2/models/appointmentModel.dart';
 import 'package:flutter/material.dart';
 
 class AppointmentHistory extends StatefulWidget {
