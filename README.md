@@ -48,6 +48,11 @@ This is a school project written wiht Flutter.
 *Added to List of Appointment History Page
 *TODO : dev to backend
 
+## 09_May_2019 v1
+*Added to deldata and updateData class
+*TODO: The function should be tested in updateData
+
+
 ## 09_May_2019 v2
 
 *Fixed the bugs from 07_May_2019 v1,

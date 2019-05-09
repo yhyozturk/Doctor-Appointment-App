@@ -3,6 +3,7 @@ class ValidationMixin {
     if (value.length != 11) {
       return "T.C. Kimlik Numarası 11 hane olmalıdır";
     }
+    
     return null;
   }
 
@@ -23,6 +24,12 @@ class ValidationMixin {
   String validateAdmin(String value) {
     if (value != "admin") {
       return "Hatalı yada eksik bilgi girdiniz";
+    }
+    return null;
+  }
+  String validatePassword(String value){
+    if(value.length<4){
+      return "En az 4 haneli olmalı";
     }
     return null;
   }
