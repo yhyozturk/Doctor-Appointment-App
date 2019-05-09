@@ -4,7 +4,6 @@ import 'package:fast_turtle_v2/models/sectionModel.dart';
 import 'package:flutter/material.dart';
 
 class BuildSectionList extends StatefulWidget {
-
   final Hospital _hospital;
   BuildSectionList(this._hospital);
 
@@ -13,7 +12,7 @@ class BuildSectionList extends StatefulWidget {
 }
 
 class _BuildSectionListState extends State<BuildSectionList> {
- Hospital _hospital;
+  Hospital _hospital;
   _BuildSectionListState(this._hospital);
   @override
   Widget build(BuildContext context) {
@@ -27,7 +26,10 @@ class _BuildSectionListState extends State<BuildSectionList> {
 
   _buildStremBuilder(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection("tblBolum").where("hastaneId", isEqualTo: _hospital.hastaneId).snapshots(),
+      stream: Firestore.instance
+          .collection("tblBolum")
+          .where("hastaneId", isEqualTo: _hospital.hastaneId)
+          .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return LinearProgressIndicator();
