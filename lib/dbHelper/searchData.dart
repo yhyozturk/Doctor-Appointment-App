@@ -55,6 +55,12 @@ class SearchService {
         .where('hastaneId', isEqualTo: hospitalId)
         .getDocuments();
   }
+  searchSectionByHospitalIdAndSectionName(int hospitalId, String sectionName) {
+    return Firestore.instance
+        .collection("tblBolum")
+        .where('hastaneId', isEqualTo: hospitalId).where('bolumAdi', isEqualTo: sectionName)
+        .getDocuments();
+  }
 
   getHospitals() {
     return Firestore.instance.collection("tblHastane").getDocuments();

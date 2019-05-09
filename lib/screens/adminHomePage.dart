@@ -1,6 +1,15 @@
 import 'package:fast_turtle_v2/models/adminModel.dart';
+import 'package:fast_turtle_v2/screens/addAdminPage.dart';
 import 'package:fast_turtle_v2/screens/addDoctorPage.dart';
 import 'package:fast_turtle_v2/screens/addHospitalPage.dart';
+import 'package:fast_turtle_v2/screens/addSectionPage.dart';
+import 'package:fast_turtle_v2/screens/deleteDoctorPage.dart';
+import 'package:fast_turtle_v2/screens/deleteHospitalPage.dart';
+import 'package:fast_turtle_v2/screens/deleteSectionPage.dart';
+import 'package:fast_turtle_v2/screens/openCloseAppointmentPage.dart';
+import 'package:fast_turtle_v2/screens/updateDoctorPage.dart';
+import 'package:fast_turtle_v2/screens/updateHospitalPage.dart';
+import 'package:fast_turtle_v2/screens/updateSectionPage.dart';
 import 'package:flutter/material.dart';
 
 class AdminHomePage extends StatefulWidget {
@@ -230,40 +239,40 @@ class _AdminHomePageState extends State<AdminHomePage> {
         ),
         onPressed: () {
           switch (buttonIndex) {
-            case 0:
+            case 0:Navigator.push(context, MaterialPageRoute(builder: (context)=>UpdateHospital()));
               
               break;
             case 1:Navigator.push(context, MaterialPageRoute(builder: (context)=>AddHospital()));
 
               break;
-            case 2:
+            case 2:Navigator.push(context, MaterialPageRoute(builder: (context)=>DeleteHospital()));
 
               break;
-            case 3:
+            case 3:Navigator.push(context, MaterialPageRoute(builder: (context)=>UpdateSection()));
 
               break;
-            case 4:
+            case 4:Navigator.push(context, MaterialPageRoute(builder: (context)=>AddSection()));
 
               break;
-            case 5:
+            case 5:Navigator.push(context, MaterialPageRoute(builder: (context)=>DeleteSection()));
 
               break;
-            case 6:
+            case 6:Navigator.push(context, MaterialPageRoute(builder: (context)=>UpdateDoctor()));
 
               break;
             case 7:Navigator.push(context, MaterialPageRoute(builder: (context)=>AddDoctor()));
 
               break;
-            case 8:
+            case 8:Navigator.push(context, MaterialPageRoute(builder: (context)=>DeleteDoctor()));
 
               break;
-            case 9:
+            case 9:Navigator.push(context, MaterialPageRoute(builder: (context)=>OpenCloseAppointment()));
 
               break;
-            case 10:
+            case 10:Navigator.push(context, MaterialPageRoute(builder: (context)=>AddAdmin()));
 
               break;
-            case 11:
+            case 11:Navigator.pop(context); //Logout
 
               break;
             default:

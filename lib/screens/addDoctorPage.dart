@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fast_turtle_v2/dbHelper/addData.dart';
 import 'package:fast_turtle_v2/models/doktorModel.dart';
 import 'package:fast_turtle_v2/models/hospitalModel.dart';
 import 'package:fast_turtle_v2/models/sectionModel.dart';
@@ -59,7 +60,7 @@ class AddDoctorState extends State with ValidationMixin {
                       SizedBox(
                         height: 16.0,
                       ),
-                      _showSelectedHospital(hastaneSecildiMi),
+                      showSelectedHospital(hastaneSecildiMi),
                       SizedBox(
                         height: 16.0,
                       ),
@@ -153,7 +154,7 @@ class AddDoctorState extends State with ValidationMixin {
         });
   }
 
-  void hospitalNavigator(dynamic page) async {
+   void hospitalNavigator(dynamic page) async {
     hastane = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => page));
 
@@ -175,7 +176,7 @@ class AddDoctorState extends State with ValidationMixin {
     }
   }
 
-  _showSelectedHospital(bool secildiMi) {
+  showSelectedHospital(bool secildiMi) {
     String textMessage = " ";
     if (secildiMi) {
       setState(() {
@@ -256,7 +257,7 @@ class AddDoctorState extends State with ValidationMixin {
           if (hastaneSecildiMi && bolumSecildiMi) {
             if (formKey.currentState.validate()) {
               formKey.currentState.save();
-              saveDoctor(this.doktor, this.section, this.hastane);
+              AddService().saveDoctor(this.doktor, this.section, this.hastane);
             }
           } else {
             alrtHospital(context,
@@ -265,16 +266,5 @@ class AddDoctorState extends State with ValidationMixin {
         },
       ),
     );
-  }
-
-  void saveDoctor(Doktor dr, Section bolumu, Hospital hastanesi) {
-    Firestore.instance.collection('tblDoktor').document().setData({
-      'kimlikNo': dr.kimlikNo,
-      'ad': dr.adi,
-      'soyad': dr.soyadi,
-      'sifre': dr.sifre,
-      'bolumId': bolumu.bolumId,
-      'hastaneId': hastanesi.hastaneId
-    });
   }
 }
