@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fast_turtle_v2/dbHelper/addData.dart';
 import 'package:fast_turtle_v2/dbHelper/searchData.dart';
 import 'package:fast_turtle_v2/models/hospitalModel.dart';
 import 'package:fast_turtle_v2/models/sectionModel.dart';
@@ -13,10 +14,11 @@ class AddSection extends StatefulWidget {
 }
 
 class AddSectionState extends State {
-  Section bolum;
+  final bolum = Section();
   Hospital hastane = Hospital();
   bool hastaneSecildiMi = false;
   double goruntu = 0.0;
+  final formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,6 +36,7 @@ class AddSectionState extends State {
             Container(
               padding: EdgeInsets.only(top: 75.0, left: 25.0, right: 25.0),
               child: Form(
+                key: formKey,
                 child: Column(
                   children: <Widget>[
                     RaisedButton(
@@ -88,14 +91,15 @@ class AddSectionState extends State {
         style: TextStyle(fontSize: 20.0),
       ),
       onPressed: () {
+        formKey.currentState.save();
         SearchService()
             .searchSectionByHospitalIdAndSectionName(
                 hastane.hastaneId, bolum.bolumAdi)
             .then((QuerySnapshot docs) {
-          if (docs.documents[0]['bolumAdi'] == bolum.bolumAdi) {
+          if (docs.documents.isEmpty) {
+            AddService().saveSection(bolum, hastane);
+          } else {
             alrtHospital(context, "Aynı isimde bölüm ekleyemezsiniz");
-          }else {
-            
           }
         });
       },

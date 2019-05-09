@@ -45,15 +45,15 @@ class AddService {
         {'hastaneAdi': hastane.hastaneAdi, 'hastaneId': hastane.hastaneId});
     return 'Hastane kaydı tamamlandı';
   }
-}
-  
-  String saveSection(Section bolum){
-    SearchService().getSectionLastId().then((QuerySnapshot docs){
+
+  String saveSection(Section bolum, Hospital hastane) {
+    SearchService().getLastSectionId().then((QuerySnapshot docs) {
       Firestore.instance.collection("tblBolum").document().setData({
-        "bolumAdi":bolum.bolumAdi,
-        "bolumId":docs.documents[0]["bolumId"]+1,
-        "hastaneId":bolum.hastaneId
+        "bolumAdi": bolum.bolumAdi,
+        "bolumId": docs.documents[0]["bolumId"] + 1,
+        "hastaneId": hastane.hastaneId
       });
     });
     return "Bölüm ekleme tamamlandı";
   }
+}
