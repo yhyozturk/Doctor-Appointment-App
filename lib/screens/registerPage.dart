@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fast_turtle_v2/dbHelper/addData.dart';
 import 'package:fast_turtle_v2/models/userModel.dart';
 import 'package:flutter/material.dart';
 import 'package:fast_turtle_v2/mixins/validation_mixin.dart';
@@ -205,7 +205,7 @@ class RegisterPageState extends State with ValidationMixin {
           if (registerFormKey.currentState.validate()) {
             registerFormKey.currentState.save();
             basicPop(context, true);
-            saveUser(user);
+            AddService().saveUser(user);
           }
           //  else {
           //   alrtFail(context);
@@ -213,17 +213,5 @@ class RegisterPageState extends State with ValidationMixin {
         },
       ),
     );
-  }
-
-  void saveUser(User user) {
-    Firestore.instance.collection('tblKullanici').document().setData({
-      'ad': user.adi,
-      'soyad': user.soyadi,
-      'kimlikNo': user.kimlikNo,
-      'cinsiyet': user.cinsiyet,
-      'dogumTarihi': user.dogumTarihi,
-      'dogumYeri': user.dogumYeri,
-      'sifre': user.sifre
-    });
   }
 }

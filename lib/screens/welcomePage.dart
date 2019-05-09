@@ -182,6 +182,7 @@ class WelcomePageState extends State
 
   Widget kimlikNoField(int tabIndex, BuildContext context) {
     return TextFormField(
+      keyboardType: TextInputType.number,
       decoration: InputDecoration(
         labelText: "T.C. Kimlik Numarası:",
         labelStyle: TextStyle(
@@ -204,7 +205,19 @@ class WelcomePageState extends State
         labelStyle: TextStyle(
             fontSize: 17.0, fontWeight: FontWeight.bold, color: Colors.grey),
       ),
+      validator: validatePassword,
       obscureText: true,
+      onSaved: (String value){
+      if(tabIndex==0){
+        user.sifre=value;
+      }
+      else if(tabIndex==1){
+      doktor.sifre=value;
+      }
+      else{
+        admin.password=value;
+      }
+      },
     );
   }
 
@@ -219,11 +232,12 @@ class WelcomePageState extends State
   }
 
   bool kimlikNoDogrula = false;
+  bool sifreDogrula=false;
   var tempSearchStore = [];
 
   //girilen kimlik numarasına kayıtlı bir kullanıcı olup olmadıpını arayan metot...
-  initiateSearch(girilenId, int tabIndex, String searchWhere) {
-    SearchService().searchById(girilenId, tabIndex).then((QuerySnapshot docs) {
+  initiateSearch(girilenId,gelenPassword, int tabIndex, String searchWhere ,String searchPass) {
+    SearchService().searchById(girilenId,gelenPassword,tabIndex).then((QuerySnapshot docs) {
       for (int i = 0; i < docs.documents.length; i++) {
         tempSearchStore.add(docs.documents[i].data);
 
@@ -237,8 +251,9 @@ class WelcomePageState extends State
       }
     });
     for (var item in tempSearchStore) {
-      if (item[searchWhere] == girilenId) {
+      if (item[searchWhere] == girilenId && item[searchPass]==gelenPassword) {
         kimlikNoDogrula = true;
+        sifreDogrula=true;
       }
     }
   }
@@ -255,25 +270,27 @@ class WelcomePageState extends State
         splashColor: Colors.cyanAccent,
         onPressed: () {
           kimlikNoDogrula = false;
+          sifreDogrula=false;
+          formKey.currentState.validate();
           formKey.currentState.save();
           if (formKey == kullaniciFormKey) {
-            initiateSearch(user.kimlikNo, 0, 'kimlikNo');
+            initiateSearch(user.kimlikNo,user.sifre, 0, 'kimlikNo','sifre');
 
-            if (kimlikNoDogrula) {
+            if (kimlikNoDogrula && sifreDogrula) {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => UserHomePage(user)));
             }
           } else if (formKey == doktorFormKey) {
-            initiateSearch(doktor.kimlikNo, 1, 'kimlikNo');
+            initiateSearch(doktor.kimlikNo,doktor.sifre, 1, 'kimlikNo','sifre');
 
-            if (kimlikNoDogrula) {
+            if (kimlikNoDogrula && sifreDogrula) {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => UserHomePage(user)));
             }
           } else if (formKey == adminFormKey) {
-            initiateSearch(admin.nickname, 2, 'nickname');
+            initiateSearch(admin.nickname,admin.password, 2, 'nickname','password');
 
-            if (kimlikNoDogrula) {
+            if (kimlikNoDogrula && sifreDogrula) {
               Navigator.push(
                   context,
                   MaterialPageRoute(
