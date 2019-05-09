@@ -1,24 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SearchService {
-  searchById(String gelenId,String gelenPassword, int formKey) {
+  searchById(String gelenId, String gelenPassword, int formKey) {
     if (formKey == 0) {
       return Firestore.instance
           .collection('tblKullanici')
           .where('kimlikNo', isEqualTo: gelenId)
-          .where('sifre',isEqualTo: gelenPassword)
+          .where('sifre', isEqualTo: gelenPassword)
           .getDocuments();
     } else if (formKey == 1) {
       return Firestore.instance
           .collection('tblDoktor')
           .where('kimlikNo', isEqualTo: gelenId)
-          .where('sifre',isEqualTo: gelenPassword)
+          .where('sifre', isEqualTo: gelenPassword)
           .getDocuments();
     } else if (formKey == 2) {
       return Firestore.instance
           .collection('tblAdmin')
           .where('nickname', isEqualTo: gelenId)
-          .where('password',isEqualTo: gelenPassword)
+          .where('password', isEqualTo: gelenPassword)
           .getDocuments();
     }
   }
@@ -55,10 +55,12 @@ class SearchService {
         .where('hastaneId', isEqualTo: hospitalId)
         .getDocuments();
   }
+
   searchSectionByHospitalIdAndSectionName(int hospitalId, String sectionName) {
     return Firestore.instance
         .collection("tblBolum")
-        .where('hastaneId', isEqualTo: hospitalId).where('bolumAdi', isEqualTo: sectionName)
+        .where('hastaneId', isEqualTo: hospitalId)
+        .where('bolumAdi', isEqualTo: sectionName)
         .getDocuments();
   }
 
@@ -69,15 +71,17 @@ class SearchService {
   getSections() {
     return Firestore.instance.collection("tblBolum").getDocuments();
   }
-  getSectionLastId(){
-    return Firestore.instance.collection("tblBolum")
-    .orderBy("bolumId", descending: true);
+
+  getLastSectionId() {
+    return Firestore.instance
+        .collection("tblBolum")
+        .orderBy("bolumId", descending: true).getDocuments();
   }
 
   getDoctors() {
     return Firestore.instance.collection("tblDoktor").getDocuments();
   }
-  
+
   getAppointments() {
     return Firestore.instance.collection("tblRandevuGecmisi").getDocuments();
   }

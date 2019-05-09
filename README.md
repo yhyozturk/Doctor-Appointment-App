@@ -64,3 +64,7 @@ This is a school project written wiht Flutter.
 
 *AddSectionPage backend implementation added, has some lack
 
+## 09_May_2019 v4
+
+*fixed the deficiences on 09_May_2019 v3
+
