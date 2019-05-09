@@ -8,7 +8,7 @@ This is a school project written wiht Flutter.
 *Some validation code(validation_mixin.dart)
 
 
-## Between Initial and 05_May_2019 
+## Between Initial and 05_May_2019
 
 *User and doctor model added,
 *Firebase sync,
@@ -52,8 +52,15 @@ This is a school project written wiht Flutter.
 *Added to deldata and updateData class
 *TODO: The function should be tested in updateData
 
+## 09_May_2019 v1.1
+*added to saveSection function
 
 ## 09_May_2019 v2
 
 *Fixed the bugs from 07_May_2019 v1,
 *All function about addDoktorPage are work and stable
+
+## 09_May_2019 v3
+
+*AddSectionPage backend implementation added, has some lack
+

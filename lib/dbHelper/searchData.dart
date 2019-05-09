@@ -69,6 +69,10 @@ class SearchService {
   getSections() {
     return Firestore.instance.collection("tblBolum").getDocuments();
   }
+  getSectionLastId(){
+    return Firestore.instance.collection("tblBolum")
+    .orderBy("bolumId", descending: true);
+  }
 
   getDoctors() {
     return Firestore.instance.collection("tblDoktor").getDocuments();

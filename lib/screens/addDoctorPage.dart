@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fast_turtle_v2/dbHelper/addData.dart';
 import 'package:fast_turtle_v2/models/doktorModel.dart';
 import 'package:fast_turtle_v2/models/hospitalModel.dart';
@@ -154,7 +153,7 @@ class AddDoctorState extends State with ValidationMixin {
         });
   }
 
-   void hospitalNavigator(dynamic page) async {
+  void hospitalNavigator(dynamic page) async {
     hastane = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => page));
 

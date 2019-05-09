@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fast_turtle_v2/dbHelper/searchData.dart';
 import 'package:fast_turtle_v2/models/sectionModel.dart';
 import 'package:fast_turtle_v2/models/userModel.dart';
 import 'package:fast_turtle_v2/models/doktorModel.dart';
@@ -45,3 +46,14 @@ class AddService {
     return 'Hastane kaydı tamamlandı';
   }
 }
+  
+  String saveSection(Section bolum){
+    SearchService().getSectionLastId().then((QuerySnapshot docs){
+      Firestore.instance.collection("tblBolum").document().setData({
+        "bolumAdi":bolum.bolumAdi,
+        "bolumId":docs.documents[0]["bolumId"]+1,
+        "hastaneId":bolum.hastaneId
+      });
+    });
+    return "Bölüm ekleme tamamlandı";
+  }
