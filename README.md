@@ -78,3 +78,8 @@ This is a school project written wiht Flutter.
  *DeleteDoctor method added,
  *Fixed a mistake on addDoctorPage.dart
 
+ ## 11_May_2019 v1
+
+ *DeleteSection and deleteHospital page and method added,
+ *All delete function work and stable
+

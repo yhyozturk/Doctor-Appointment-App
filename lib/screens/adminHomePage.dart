@@ -139,18 +139,18 @@ class _AdminHomePageState extends State<AdminHomePage> {
     return Container(
       child: Column(
         children: <Widget>[
-          _butonOlustur("Hastane Güncelle",0),
+          _butonOlustur("Hastane Güncelle", 0),
           SizedBox(
             height: 5.0,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              _butonOlustur("Hastane Ekle",1),
+              _butonOlustur("Hastane Ekle", 1),
               SizedBox(
                 width: 10.0,
               ),
-              _butonOlustur("Hastane Sil",2),
+              _butonOlustur("Hastane Sil", 2),
             ],
           )
         ],
@@ -162,18 +162,18 @@ class _AdminHomePageState extends State<AdminHomePage> {
     return Container(
       child: Column(
         children: <Widget>[
-          _butonOlustur("Bölüm Güncelle",3),
+          _butonOlustur("Bölüm Güncelle", 3),
           SizedBox(
             height: 5.0,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              _butonOlustur("Bölüm Ekle",4),
+              _butonOlustur("Bölüm Ekle", 4),
               SizedBox(
                 width: 10.0,
               ),
-              _butonOlustur("Bölüm Sil",5),
+              _butonOlustur("Bölüm Sil", 5),
             ],
           )
         ],
@@ -185,18 +185,18 @@ class _AdminHomePageState extends State<AdminHomePage> {
     return Container(
       child: Column(
         children: <Widget>[
-          _butonOlustur("Doktor Güncelle",6),
+          _butonOlustur("Doktor Güncelle", 6),
           SizedBox(
             height: 5.0,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              _butonOlustur("Doktor Ekle",7),
+              _butonOlustur("Doktor Ekle", 7),
               SizedBox(
                 width: 10.0,
               ),
-              _butonOlustur("Doktor Sil",8),
+              _butonOlustur("Doktor Sil", 8),
             ],
           )
         ],
@@ -208,18 +208,18 @@ class _AdminHomePageState extends State<AdminHomePage> {
     return Container(
       child: Column(
         children: <Widget>[
-          _butonOlustur("Randevu Aç/Kapat",9),
+          _butonOlustur("Randevu Aç/Kapat", 9),
           SizedBox(
             height: 5.0,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              _butonOlustur("Admin Ekle",10),
+              _butonOlustur("Admin Ekle", 10),
               SizedBox(
                 width: 10.0,
               ),
-              _butonOlustur("Çıkış Yap",11),
+              _butonOlustur("Çıkış Yap", 11),
             ],
           )
         ],
@@ -239,39 +239,51 @@ class _AdminHomePageState extends State<AdminHomePage> {
         ),
         onPressed: () {
           switch (buttonIndex) {
-            case 0:basicNavigator(UpdateHospital());
-              
-              break;
-            case 1:basicNavigator(AddHospital());
+            case 0:
+              basicNavigator(UpdateHospital());
 
               break;
-            case 2:basicNavigator(DeleteHospital());
+            case 1:
+              basicNavigator(AddHospital());
 
               break;
-            case 3:basicNavigator(UpdateSection());
-              break;
-            case 4:basicNavigator(AddSection());
+            case 2:
+              basicNavigator(DeleteHospital());
 
               break;
-            case 5:basicNavigator(DeleteSection());
+            case 3:
+              basicNavigator(UpdateSection());
+              break;
+            case 4:
+              basicNavigator(AddSection());
 
               break;
-            case 6: basicNavigator(UpdateDoctor());
+            case 5:
+              basicNavigator(DeleteSection());
 
               break;
-            case 7:basicNavigator(AddDoctor());
+            case 6:
+              basicNavigator(UpdateDoctor());
 
               break;
-            case 8:basicNavigator(DeleteDoctor());
+            case 7:
+              basicNavigator(AddDoctor());
 
               break;
-            case 9:basicNavigator(OpenCloseAppointment());
+            case 8:
+              basicNavigator(DeleteDoctor());
 
               break;
-            case 10:basicNavigator(AddAdmin());
+            case 9:
+              basicNavigator(OpenCloseAppointment());
 
               break;
-            case 11:Navigator.pop(context); //Logout
+            case 10:
+              basicNavigator(AddAdmin());
+
+              break;
+            case 11:
+              Navigator.pop(context); //Logout
 
               break;
             default:
