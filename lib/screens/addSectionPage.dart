@@ -98,6 +98,7 @@ class AddSectionState extends State {
             .then((QuerySnapshot docs) {
           if (docs.documents.isEmpty) {
             AddService().saveSection(bolum, hastane);
+            Navigator.pop(context, true);
           } else {
             alrtHospital(context, "Aynı isimde bölüm ekleyemezsiniz");
           }
