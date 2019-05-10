@@ -5,6 +5,7 @@ import 'package:fast_turtle_v2/models/hospitalModel.dart';
 import 'package:fast_turtle_v2/models/sectionModel.dart';
 import 'package:fast_turtle_v2/screens/showHospitals.dart';
 import 'package:flutter/material.dart';
+import 'package:fast_turtle_v2/mixins/validation_mixin.dart';
 
 class AddSection extends StatefulWidget {
   @override
@@ -13,7 +14,7 @@ class AddSection extends StatefulWidget {
   }
 }
 
-class AddSectionState extends State {
+class AddSectionState extends State with ValidationMixin {
   final bolum = Section();
   Hospital hastane = Hospital();
   bool hastaneSecildiMi = false;
@@ -77,6 +78,7 @@ class AddSectionState extends State {
               color: Colors.greenAccent),
           focusedBorder:
               OutlineInputBorder(borderSide: BorderSide(color: Colors.black))),
+      validator: validateFirstName,
       onSaved: (String value) {
         bolum.bolumAdi = value;
       },
@@ -91,18 +93,22 @@ class AddSectionState extends State {
         style: TextStyle(fontSize: 20.0),
       ),
       onPressed: () {
-        formKey.currentState.save();
-        SearchService()
-            .searchSectionByHospitalIdAndSectionName(
-                hastane.hastaneId, bolum.bolumAdi)
-            .then((QuerySnapshot docs) {
-          if (docs.documents.isEmpty) {
-            AddService().saveSection(bolum, hastane);
-            Navigator.pop(context, true);
-          } else {
-            alrtHospital(context, "Aynı isimde bölüm ekleyemezsiniz");
-          }
-        });
+        if (hastaneSecildiMi && formKey.currentState.validate()) {
+          formKey.currentState.save();
+          SearchService()
+              .searchSectionByHospitalIdAndSectionName(
+                  hastane.hastaneId, bolum.bolumAdi)
+              .then((QuerySnapshot docs) {
+            if (docs.documents.isEmpty) {
+              AddService().saveSection(bolum, hastane);
+              Navigator.pop(context, true);
+            } else {
+              alrtHospital(context, "Aynı isimde bölüm ekleyemezsiniz");
+            }
+          });
+        } else {
+          alrtHospital(context, "Eksik bilgi var");
+        }
       },
     );
   }
