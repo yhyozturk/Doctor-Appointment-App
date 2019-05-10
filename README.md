@@ -73,3 +73,8 @@ This is a school project written wiht Flutter.
 *All add and update function work and stable for adminHomePage,
 *Implement some screen navigator detail
 
+## 10_May_2019 v2
+ 
+ *DeleteDoctor method added,
+ *Fixed a mistake on addDoctorPage.dart
+
