@@ -255,12 +255,14 @@ class AddDoctorState extends State with ValidationMixin {
           style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
         ),
         onPressed: () {
-          SearchService()
-              .searchDoctorById(doktor.kimlikNo)
-              .then((QuerySnapshot docs) {
-            if (hastaneSecildiMi && bolumSecildiMi) {
-              if (docs.documents.isEmpty && formKey.currentState.validate()) {
-                formKey.currentState.save();
+          if (hastaneSecildiMi &&
+              bolumSecildiMi &&
+              formKey.currentState.validate()) {
+            formKey.currentState.save();
+            SearchService()
+                .searchDoctorById(doktor.kimlikNo)
+                .then((QuerySnapshot docs) {
+              if (docs.documents.isEmpty) {
                 AddService()
                     .saveDoctor(this.doktor, this.section, this.hastane);
                 Navigator.pop(context, true);
@@ -268,11 +270,11 @@ class AddDoctorState extends State with ValidationMixin {
                 alrtHospital(context,
                     "Bu kimlik numarasına sahip bir doktor zaten mevcut");
               }
-            } else {
-              alrtHospital(context,
-                  "İşlemi tamamlamak için gerekli alanları doldurmanız gerekmektedir");
-            }
-          });
+            });
+          } else {
+            alrtHospital(context,
+                "İşlemi tamamlamak için gerekli alanları doldurmanız gerekmektedir");
+          }
         },
       ),
     );

@@ -1,5 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fast_turtle_v2/dbHelper/delData.dart';
 import 'package:fast_turtle_v2/dbHelper/searchData.dart';
+import 'package:fast_turtle_v2/models/doktorModel.dart';
+import 'package:fast_turtle_v2/models/hospitalModel.dart';
+import 'package:fast_turtle_v2/models/sectionModel.dart';
+import 'package:fast_turtle_v2/screens/showDoctors.dart';
+import 'package:fast_turtle_v2/screens/showHospitals.dart';
+import 'package:fast_turtle_v2/screens/showSections.dart';
 import 'package:flutter/material.dart';
 
 class DeleteDoctor extends StatefulWidget {
@@ -10,212 +17,260 @@ class DeleteDoctor extends StatefulWidget {
 }
 
 class DeleteDoctorState extends State {
-  var doctorNames = [];
-  var selectedDoctor;
-  var sectionNames = [];
-  var hospitalNames = [];
-  var selectedHospital;
-  var selectedSection;
-
-  @override
-  void initState() {
-    super.initState();
-    initiateDoctors();
-  }
+  Hospital hastane = Hospital();
+  Section section = Section();
+  Doktor doktor = Doktor();
+  double goruntu = 0.0;
+  double drGoruntu = 0.0;
+  bool hastaneSecildiMi = false;
+  bool bolumSecildiMi = false;
+  bool doktorSecildiMi = false;
+  String textMessage = " ";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blueAccent,
-        appBar: AppBar(
-          title: Text(
-            "Doktor Silme Ekranı",
-            style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
-          ),
+      appBar: AppBar(
+        title: Text(
+          "Doktor Silme Ekranı",
+          style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.all(50.0),
-                child: Form(
-                  child: Column(
-                    children: <Widget>[
-                      _hastaneSecField(),
-                      _bolumSecField(),
-                      _doktorSecField(),
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      _silButonu()
-                    ],
-                  ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(top: 50.0, left: 20.0, right: 20.0),
+              child: Form(
+                child: Column(
+                  children: <Widget>[
+                    RaisedButton(
+                      child: Text("Hastane Seçmek İçin Tıkla"),
+                      onPressed: () {
+                        bolumSecildiMi = false;
+                        doktorSecildiMi = false;
+                        hospitalNavigator(BuildHospitalList());
+                      },
+                    ),
+                    SizedBox(
+                      height: 16.0,
+                    ),
+                    showSelectedHospital(hastaneSecildiMi),
+                    SizedBox(
+                      height: 16.0,
+                    ),
+                    RaisedButton(
+                      child: Text("Bölüm Seçmek İçin Tıkla"),
+                      onPressed: () {
+                        if (hastaneSecildiMi) {
+                          doktorSecildiMi = false;
+                          sectionNavigator(BuildSectionList(hastane));
+                        } else {
+                          alrtHospital(
+                              context, "Hastane seçmeden bölüm seçemezsiniz");
+                        }
+                      },
+                    ),
+                    SizedBox(
+                      height: 16.0,
+                    ),
+                    _showSelectedSection(bolumSecildiMi),
+                    SizedBox(
+                      height: 16.0,
+                    ),
+                    RaisedButton(
+                      child: Text("Doktor Seçmek İçin Tıkla"),
+                      onPressed: () {
+                        if (hastaneSecildiMi && bolumSecildiMi) {
+                          doctorNavigator(BuildDoctorList(section, hastane));
+                        } else {
+                          alrtHospital(context,
+                              "Hastane ve bölüm seçmeden doktor seçemezsiniz");
+                        }
+                      },
+                    ),
+                    SizedBox(
+                      height: 16.0,
+                    ),
+                    showSelectedDoctor(doktorSecildiMi),
+                    SizedBox(
+                      height: 25.0,
+                    ),
+                    _silButonu()
+                  ],
                 ),
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
-        bottomNavigationBar: Container(
-        margin: EdgeInsets.only(bottom: 10.0, left: 8.0, right: 8.0),
-        child: _cikisYapButonu(),
-      ),);
-  }
-
-  initiateHospitals() {
-    SearchService().getHospitals().then((QuerySnapshot docs) {
-      for (var i = 0; i < docs.documents.length; i++) {
-        hospitalNames.add(docs.documents[i]['hastaneAdi'].toString());
-      }
-    });
-  }
-
-  _hastaneSecField() {
-    return Container(
-      child: Row(
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(right: 25.0),
-            child: Text(
-              "Hastane: ",
-              style: TextStyle(fontSize: 19.0),
-            ),
-          ),
-          DropdownButton<String>(
-            hint: Text("Lütfen Seçiniz"),
-            items: hospitalNames.map((hastaneler) {
-              return DropdownMenuItem<String>(
-                value: hastaneler,
-                child: Text(hastaneler),
-              );
-            }).toList(),
-            value: selectedHospital,
-            onChanged: (String tiklanan) {
-              setState(() {
-                if (tiklanan == null) {
-                  this.selectedHospital = hospitalNames[0];
-                } else {
-                  this.selectedHospital = tiklanan;
-                }
-              });
-            },
-          ),
-        ],
       ),
     );
   }
 
-  initiateSections() {
-    SearchService().getSections().then((QuerySnapshot docs) {
-      for (var i = 0; i < docs.documents.length; i++) {
-        sectionNames.add(docs.documents[i]['bolumAdi'].toString());
-      }
-    });
+  void alrtHospital(BuildContext context, String message) {
+    var alertDoctor = AlertDialog(
+      title: Text("Uyarı!"),
+      content: Text(message),
+    );
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDoctor;
+        });
   }
 
-  _bolumSecField() {
+  void hospitalNavigator(dynamic page) async {
+    hastane = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => page));
+
+    if (hastane == null) {
+      hastaneSecildiMi = false;
+    } else {
+      hastaneSecildiMi = true;
+    }
+  }
+
+  void sectionNavigator(dynamic page) async {
+    section = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => page));
+
+    if (section == null) {
+      bolumSecildiMi = false;
+    } else {
+      bolumSecildiMi = true;
+    }
+  }
+
+  showSelectedHospital(bool secildiMi) {
+    String textMessage = " ";
+    if (secildiMi) {
+      setState(() {
+        textMessage = this.hastane.hastaneAdi.toString();
+      });
+      goruntu = 1.0;
+    } else {
+      goruntu = 0.0;
+    }
+
     return Container(
-      child: Row(
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(right: 25.0),
-            child: Text(
-              "Bölüm: ",
-              style: TextStyle(fontSize: 19.0),
+        decoration: BoxDecoration(),
+        child: Row(
+          children: <Widget>[
+            Text(
+              "Seçilen Hastane : ",
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
             ),
-          ),
-          DropdownButton<String>(
-            hint: Text("Lütfen Seçiniz"),
-            items: sectionNames.map((bolumler) {
-              return DropdownMenuItem<String>(
-                value: bolumler,
-                child: Text(bolumler),
-              );
-            }).toList(),
-            value: selectedSection,
-            onChanged: (String tiklanan) {
-              setState(() {
-                if (tiklanan == null) {
-                  this.selectedSection = sectionNames[0];
-                } else {
-                  this.selectedSection = tiklanan;
-                }
-              });
-            },
-          ),
-        ],
-      ),
+            Opacity(
+                opacity: goruntu,
+                child: Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    textMessage,
+                    style:
+                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                  ),
+                ))
+          ],
+        ));
+  }
+
+  _showSelectedSection(bool secildiMi) {
+    double goruntu = 0.0;
+
+    if (secildiMi) {
+      setState(() {
+        textMessage = this.section.bolumAdi.toString();
+      });
+      goruntu = 1.0;
+    } else {
+      goruntu = 0.0;
+    }
+
+    return Container(
+        decoration: BoxDecoration(),
+        child: Row(
+          children: <Widget>[
+            Text(
+              "Seçilen Bölüm : ",
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            ),
+            Opacity(
+                opacity: goruntu,
+                child: Container(
+                    alignment: Alignment.center,
+                    child: _buildTextMessage(textMessage)))
+          ],
+        ));
+  }
+
+  _buildTextMessage(String gelenText) {
+    return Text(
+      textMessage,
+      style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
     );
   }
 
-  initiateDoctors() {
-    SearchService().getDoctors().then((QuerySnapshot docs) {
-      for (var i = 0; i < docs.documents.length; i++) {
-        doctorNames.add(docs.documents[i]['ad'].toString());
-      }
-    });
+  void doctorNavigator(dynamic page) async {
+    doktor = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => page));
+
+    if (doktor == null) {
+      doktorSecildiMi = false;
+    } else {
+      doktorSecildiMi = true;
+    }
   }
 
-  _doktorSecField() {
+  showSelectedDoctor(bool secildiMih) {
+    String textMessage = " ";
+    if (secildiMih) {
+      setState(() {
+        textMessage = this.doktor.adi.toString() + " " + this.doktor.soyadi;
+      });
+      drGoruntu = 1.0;
+    } else {
+      drGoruntu = 0.0;
+    }
+
     return Container(
-      child: Row(
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(right: 25.0),
-            child: Text(
-              "Doktor: ",
-              style: TextStyle(fontSize: 19.0),
+        decoration: BoxDecoration(),
+        child: Row(
+          children: <Widget>[
+            Text(
+              "Seçilen Doktor : ",
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
             ),
-          ),
-          DropdownButton<String>(
-            hint: Text("Lütfen Seçiniz"),
-            items: doctorNames.map((doktorlar) {
-              return DropdownMenuItem<String>(
-                value: doktorlar,
-                child: Text(doktorlar),
-              );
-            }).toList(),
-            value: selectedDoctor,
-            onChanged: (String tiklanan) {
-              setState(() {
-                if (tiklanan == null) {
-                  this.selectedDoctor = doctorNames[0];
-                } else {
-                  this.selectedDoctor = tiklanan;
-                }
-              });
-            },
-          ),
-        ],
-      ),
-    );
+            Opacity(
+                opacity: goruntu,
+                child: Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    textMessage,
+                    style:
+                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                  ),
+                ))
+          ],
+        ));
   }
 
   _silButonu() {
-    return RaisedButton(
+    return Container(
+      child: RaisedButton(
         child: Text(
           "Seçili Doktoru Sil",
-          textDirection: TextDirection.ltr,
           style: TextStyle(fontSize: 20.0),
         ),
-        onPressed: () {},
-      );
-  }
-
-  _cikisYapButonu() {
-    return Container(
-      padding: EdgeInsets.all(1.0),
-      width: 390.0,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-          color: Colors.redAccent),
-      child: FlatButton(
-        splashColor: Colors.grey,
-        highlightColor: Colors.white70,
-        child: Text(
-          "Güvenli Çıkış",
-          style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
-        ),
-        onPressed: () {},
+        onPressed: () {
+          if (hastaneSecildiMi && bolumSecildiMi && doktorSecildiMi) {
+            DelService().deleteDoctorbyTCKN(doktor);
+            Navigator.pop(context, true);
+          } else {
+            alrtHospital(context, "Eksik bilgi var");
+          }
+        },
       ),
     );
   }
