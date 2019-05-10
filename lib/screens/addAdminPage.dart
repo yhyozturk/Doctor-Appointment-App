@@ -10,7 +10,6 @@ class AddAdmin extends StatefulWidget {
 }
 
 class AddAdminState extends State with ValidationMixin {
-  
   Admin admin;
 
   @override

@@ -41,8 +41,13 @@ class AddService {
   }
 
   String saveHospital(Hospital hastane) {
-    Firestore.instance.collection("tblHastane").document().setData(
-        {'hastaneAdi': hastane.hastaneAdi, 'hastaneId': hastane.hastaneId});
+    SearchService().getLastHospitalId().then((QuerySnapshot docs) {
+      Firestore.instance.collection("tblHastane").document().setData({
+        'hastaneAdi': hastane.hastaneAdi,
+        'hastaneId': docs.documents[0]['hastaneId'] + 1,
+      });
+    });
+
     return 'Hastane kaydı tamamlandı';
   }
 

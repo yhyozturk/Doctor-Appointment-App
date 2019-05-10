@@ -239,37 +239,36 @@ class _AdminHomePageState extends State<AdminHomePage> {
         ),
         onPressed: () {
           switch (buttonIndex) {
-            case 0:Navigator.push(context, MaterialPageRoute(builder: (context)=>UpdateHospital()));
+            case 0:basicNavigator(UpdateHospital());
               
               break;
-            case 1:Navigator.push(context, MaterialPageRoute(builder: (context)=>AddHospital()));
+            case 1:basicNavigator(AddHospital());
 
               break;
-            case 2:Navigator.push(context, MaterialPageRoute(builder: (context)=>DeleteHospital()));
+            case 2:basicNavigator(DeleteHospital());
 
               break;
-            case 3:Navigator.push(context, MaterialPageRoute(builder: (context)=>UpdateSection()));
+            case 3:basicNavigator(UpdateSection());
+              break;
+            case 4:basicNavigator(AddSection());
 
               break;
-            case 4:Navigator.push(context, MaterialPageRoute(builder: (context)=>AddSection()));
+            case 5:basicNavigator(DeleteSection());
 
               break;
-            case 5:Navigator.push(context, MaterialPageRoute(builder: (context)=>DeleteSection()));
+            case 6: basicNavigator(UpdateDoctor());
 
               break;
-            case 6:Navigator.push(context, MaterialPageRoute(builder: (context)=>UpdateDoctor()));
+            case 7:basicNavigator(AddDoctor());
 
               break;
-            case 7:Navigator.push(context, MaterialPageRoute(builder: (context)=>AddDoctor()));
+            case 8:basicNavigator(DeleteDoctor());
 
               break;
-            case 8:Navigator.push(context, MaterialPageRoute(builder: (context)=>DeleteDoctor()));
+            case 9:basicNavigator(OpenCloseAppointment());
 
               break;
-            case 9:Navigator.push(context, MaterialPageRoute(builder: (context)=>OpenCloseAppointment()));
-
-              break;
-            case 10:Navigator.push(context, MaterialPageRoute(builder: (context)=>AddAdmin()));
+            case 10:basicNavigator(AddAdmin());
 
               break;
             case 11:Navigator.pop(context); //Logout
@@ -280,5 +279,30 @@ class _AdminHomePageState extends State<AdminHomePage> {
         },
       ),
     );
+  }
+
+  void basicNavigator(dynamic page) async {
+    bool result = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => page));
+
+    if (result != null && result == true) {
+      alrtDone(context, "İşlem Tamamlandı");
+    }
+  }
+
+  void alrtDone(BuildContext context, String message) {
+    var alertDoctor = AlertDialog(
+      title: Text(
+        "Sonuç",
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      content: Text(message),
+    );
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDoctor;
+        });
   }
 }
