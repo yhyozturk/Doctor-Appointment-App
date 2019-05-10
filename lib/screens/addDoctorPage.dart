@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fast_turtle_v2/dbHelper/addData.dart';
+import 'package:fast_turtle_v2/dbHelper/searchData.dart';
 import 'package:fast_turtle_v2/models/doktorModel.dart';
 import 'package:fast_turtle_v2/models/hospitalModel.dart';
 import 'package:fast_turtle_v2/models/sectionModel.dart';
@@ -253,15 +255,24 @@ class AddDoctorState extends State with ValidationMixin {
           style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
         ),
         onPressed: () {
-          if (hastaneSecildiMi && bolumSecildiMi) {
-            if (formKey.currentState.validate()) {
-              formKey.currentState.save();
-              AddService().saveDoctor(this.doktor, this.section, this.hastane);
+          SearchService()
+              .searchDoctorById(doktor.kimlikNo)
+              .then((QuerySnapshot docs) {
+            if (hastaneSecildiMi && bolumSecildiMi) {
+              if (docs.documents.isEmpty && formKey.currentState.validate()) {
+                formKey.currentState.save();
+                AddService()
+                    .saveDoctor(this.doktor, this.section, this.hastane);
+                Navigator.pop(context, true);
+              } else {
+                alrtHospital(context,
+                    "Bu kimlik numarasına sahip bir doktor zaten mevcut");
+              }
+            } else {
+              alrtHospital(context,
+                  "İşlemi tamamlamak için gerekli alanları doldurmanız gerekmektedir");
             }
-          } else {
-            alrtHospital(context,
-                "İşlemi tamamlamak için gerekli alanları doldurmanız gerekmektedir");
-          }
+          });
         },
       ),
     );

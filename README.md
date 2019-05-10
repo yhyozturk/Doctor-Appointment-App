@@ -68,3 +68,8 @@ This is a school project written wiht Flutter.
 
 *fixed the deficiences on 09_May_2019 v3
 
+## 10_May_2019 v1
+
+*All add and update function work and stable for adminHomePage,
+*Implement some screen navigator detail
+

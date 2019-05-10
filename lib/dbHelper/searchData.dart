@@ -64,6 +64,13 @@ class SearchService {
         .getDocuments();
   }
 
+  searchDoctorById(String kimlikNo) {
+    return Firestore.instance
+        .collection("tblDoktor")
+        .where('kimlikNo', isEqualTo: kimlikNo)
+        .getDocuments();
+  }
+
   getHospitals() {
     return Firestore.instance.collection("tblHastane").getDocuments();
   }
@@ -75,7 +82,15 @@ class SearchService {
   getLastSectionId() {
     return Firestore.instance
         .collection("tblBolum")
-        .orderBy("bolumId", descending: true).getDocuments();
+        .orderBy("bolumId", descending: true)
+        .getDocuments();
+  }
+
+  getLastHospitalId() {
+    return Firestore.instance
+        .collection("tblHastane")
+        .orderBy("hastaneId", descending: true)
+        .getDocuments();
   }
 
   getDoctors() {
