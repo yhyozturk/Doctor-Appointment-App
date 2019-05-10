@@ -10,13 +10,14 @@ class Doktor {
 
   DocumentReference reference;
 
-  Doktor(
-      {this.kimlikNo,
-      this.adi,
-      this.soyadi,
-      this.sifre,
-      this.bolumId,
-      this.hastaneId});
+  Doktor({
+    this.kimlikNo,
+    this.adi,
+    this.soyadi,
+    this.sifre,
+    this.bolumId,
+    this.hastaneId,
+  });
 
   Doktor.fromJson(Map<String, dynamic> json) {
     kimlikNo = json['kimlikNo'];
