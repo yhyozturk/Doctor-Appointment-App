@@ -1,27 +1,46 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fast_turtle_v2/dbHelper/searchData.dart';
+import 'package:fast_turtle_v2/dbHelper/addData.dart';
 import 'package:fast_turtle_v2/models/doktorModel.dart';
+import 'package:fast_turtle_v2/models/hospitalModel.dart';
+import 'package:fast_turtle_v2/models/sectionModel.dart';
+import 'package:fast_turtle_v2/models/userModel.dart';
+import 'package:fast_turtle_v2/screens/showAppointmentTimes.dart';
+import 'package:fast_turtle_v2/screens/showDoctors.dart';
+import 'package:fast_turtle_v2/screens/showHospitals.dart';
+import 'package:fast_turtle_v2/screens/showSections.dart';
 import 'package:flutter/material.dart';
 
 class MakeAppointment extends StatefulWidget {
+   final User kullanici;
+  MakeAppointment(this.kullanici);
   @override
-  MakeAppointmentState createState() => MakeAppointmentState();
+  MakeAppointmentState createState() => MakeAppointmentState(kullanici);
 }
 
 class MakeAppointmentState extends State<MakeAppointment> {
-  var hospitalNames = [];
-  var sectionNames = [];
-  var doctorNames = [];
-  Doktor doktor;
-  var selectedHospital;
-  var selectedSection;
-  var selectedDoctor;
 
-  @override
-  void initState() {
-    super.initState();
-    initiateHospitals();
-  }
+  MakeAppointmentState(this.kullanici);
+
+  bool hastaneSecildiMi = false;
+  bool bolumSecildiMi = false;
+  bool doktorSecildiMi = false;
+  bool tarihSecildiMi = false;
+
+  double drGoruntu = 0.0;
+  double goruntu = 0.0;
+
+  Hospital hastane = Hospital();
+  Section section = Section();
+  Doktor doktor = Doktor();
+  User kullanici = User();
+
+  String textMessage = " ";
+
+  var randevuTarihi;
+  var raisedButtonText = "Tıkla ve Seç";
+
+  var saatTarihBirlesim;
+
+  double goruntuSaat = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +58,82 @@ class MakeAppointmentState extends State<MakeAppointment> {
             child: Form(
               child: Column(
                 children: <Widget>[
-                  chooserButton(),
+                  RaisedButton(
+                    child: Text("Hastane Seçmek İçin Tıkla"),
+                    onPressed: () {
+                      bolumSecildiMi = false;
+                      doktorSecildiMi = false;
+                      hospitalNavigator(BuildHospitalList());
+                    },
+                  ),
+                  SizedBox(height: 13.0),
+                  showSelectedHospital(hastaneSecildiMi),
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  RaisedButton(
+                    child: Text("Bölüm Seçmek İçin Tıkla"),
+                    onPressed: () {
+                      if (hastaneSecildiMi) {
+                        doktorSecildiMi = false;
+                        drGoruntu = 0.0;
+                        sectionNavigator(BuildSectionList(hastane));
+                      } else {
+                        alrtHospital(
+                            context, "Hastane seçmeden bölüm seçemezsiniz");
+                      }
+                    },
+                  ),
+                  SizedBox(
+                    height: 16.0,
+                  ),
+                  _showSelectedSection(bolumSecildiMi),
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  RaisedButton(
+                    child: Text("Doktor Seçmek İçin Tıkla"),
+                    onPressed: () {
+                      if (hastaneSecildiMi && bolumSecildiMi) {
+                        doctorNavigator(BuildDoctorList(section, hastane));
+                      } else {
+                        alrtHospital(context,
+                            "Hastane ve bölüm seçmeden doktor seçemezsiniz");
+                      }
+                    },
+                  ),
+                  SizedBox(
+                    height: 16.0,
+                  ),
+                  showSelectedDoctor(doktorSecildiMi),
+                  SizedBox(
+                    height: 25.0,
+                  ),
+                  dateOfAppointment(),
+                  SizedBox(
+                    height: 16.0,
+                  ),
+                  RaisedButton(
+                    child: Text("Randevu Saati Seçmek İçin Tıkla"),
+                    onPressed: () {
+                      if (randevuTarihi != null) {
+                        basicNavigator(
+                            AppointmentTimes(randevuTarihi.toString(),doktor));
+                        tarihSecildiMi = true;
+                      } else {
+                        alrtHospital(
+                            context, "Tarih seçmeden saat seçimine geçilemez");
+                      }
+                    },
+                  ),
+                  SizedBox(
+                    height: 16.0,
+                  ),
+                  showSelectedDate(tarihSecildiMi),
+                  SizedBox(
+                    height: 16.0,
+                  ),
+                  _buildDoneButton()
                 ],
               ),
             ),
@@ -49,295 +143,290 @@ class MakeAppointmentState extends State<MakeAppointment> {
     );
   }
 
-  initiateHospitals() {
-    SearchService().getHospitals().then((QuerySnapshot docs) {
-      for (var i = 0; i < docs.documents.length; i++) {
-        hospitalNames.add(docs.documents[i]['hastaneAdi'].toString());
-      }
-    });
+  void hospitalNavigator(dynamic page) async {
+    hastane = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => page));
+
+    if (hastane == null) {
+      hastaneSecildiMi = false;
+    } else {
+      hastaneSecildiMi = true;
+    }
   }
 
-  getSections(String ad) {
-    SearchService().getSections().then((QuerySnapshot docs) {
-      for (var i = 0; i < docs.documents.length; i++) {
-        if (docs.documents[i]['hastaneAdi'] == ad) {
-          sectionNames.add(docs.documents[i]['bolumAdi'].toString());
-        }
-      }
-    });
-  }
+  showSelectedHospital(bool secildiMi) {
+    String textMessage = " ";
+    if (secildiMi) {
+      setState(() {
+        textMessage = this.hastane.hastaneAdi.toString();
+      });
+      goruntu = 1.0;
+    } else {
+      goruntu = 0.0;
+    }
 
-  getDoctors(String ad) {
-    SearchService().getSections().then((QuerySnapshot docs) {
-      for (var i = 0; i < docs.documents.length; i++) {
-        if (docs.documents[i]['hastaneAdi'] == ad) {
-          sectionNames.add(docs.documents[i]['bolumAdi'].toString());
-        }
-      }
-    });
-  }
-
-  Widget chooserButton() {
     return Container(
-        padding: EdgeInsets.only(left: 20.0, top: 25.0),
-        child: Column(
+        decoration: BoxDecoration(),
+        child: Row(
           children: <Widget>[
-            chooserHospital(),
-            chooserSection(),
-            chooserDoctor(),
-            chooserDate(),
-            Container(
-              margin: EdgeInsets.only(top: 20),
-              alignment: Alignment.center,
-              padding: EdgeInsets.all(20),
-              color: Colors.amberAccent,
-              child: chooserTime(),
+            Text(
+              "Seçilen Hastane : ",
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
             ),
+            Opacity(
+                opacity: goruntu,
+                child: Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    textMessage,
+                    style:
+                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                  ),
+                ))
           ],
         ));
   }
 
-  chooserSection() {
-    return Row(
-      children: <Widget>[
-        Container(
-          padding: EdgeInsets.only(right: 25.0),
-          child: Text(
-            "Bölümü Seçin: ",
-            style: TextStyle(fontSize: 19.0),
-          ),
-        ),
-        DropdownButton<String>(
-          hint: Text("Bölüm Seçin"),
-          items: sectionNames.map((bolumler) {
-            return DropdownMenuItem<String>(
-              value: bolumler,
-              child: Text(bolumler),
-            );
-          }).toList(),
-          value: selectedSection,
-          onChanged: (String tiklanan) {
-            setState(() {
-              if (tiklanan == null) {
-                this.selectedSection = sectionNames[0];
-              } else {
-                this.selectedSection = tiklanan;
-              }
-
-              getDoctors(selectedSection);
-            });
-          },
-        ),
-      ],
+  void alrtHospital(BuildContext context, String message) {
+    var alertDoctor = AlertDialog(
+      title: Text(
+        "Uyarı!",
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      content: Text(message),
     );
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDoctor;
+        });
   }
 
-  chooserDoctor() {
-    return Row(
-      children: <Widget>[
-        Container(
-          padding: EdgeInsets.only(right: 25.0),
-          child: Text(
-            "Doktor Seçin: ",
-            style: TextStyle(fontSize: 19.0),
-          ),
-        ),
-        DropdownButton<String>(
-          hint: Text("Doktor Seçin"),
-          items: doctorNames.map((doctors) {
-            return DropdownMenuItem<String>(
-              value: doctors,
-              child: Text(doctors),
-            );
-          }).toList(),
-          value: selectedDoctor,
-          onChanged: (String tiklanan) {
-            setState(() {
-              if (tiklanan == null) {
-                this.selectedDoctor = doctorNames[0];
-              } else {
-                this.selectedDoctor = tiklanan;
-              }
-            });
-          },
-        ),
-      ],
-    );
+  void sectionNavigator(dynamic page) async {
+    section = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => page));
+
+    if (section == null) {
+      bolumSecildiMi = false;
+    } else {
+      bolumSecildiMi = true;
+    }
   }
 
-  chooserHospital() {
-    return Row(
-      children: <Widget>[
-        Container(
-          padding: EdgeInsets.only(right: 25.0),
-          child: Text(
-            "Hastane Seçin: ",
-            style: TextStyle(fontSize: 19.0),
-          ),
-        ),
-        DropdownButton<String>(
-          hint: Text("Hastane Seçin"),
-          items: hospitalNames.map((hastaneler) {
-            return DropdownMenuItem<String>(
-              value: hastaneler,
-              child: Text(hastaneler),
-            );
-          }).toList(),
-          value: selectedHospital,
-          onChanged: (String tiklanan) {
-            setState(() {
-              if (tiklanan == null) {
-                this.selectedHospital = hospitalNames[0];
-              } else {
-                this.selectedHospital = tiklanan;
-              }
+  _showSelectedSection(bool secildiMi) {
+    double goruntu = 0.0;
 
-              getSections(selectedHospital);
-            });
-          },
-        ),
-      ],
-    );
-  }
+    if (secildiMi) {
+      setState(() {
+        textMessage = this.section.bolumAdi.toString();
+      });
+      goruntu = 1.0;
+    } else {
+      goruntu = 0.0;
+    }
 
-  chooserDate() {
     return Container(
-      padding: EdgeInsets.only(right: 25.0),
+        decoration: BoxDecoration(),
+        child: Row(
+          children: <Widget>[
+            Text(
+              "Seçilen Bölüm : ",
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            ),
+            Opacity(
+                opacity: goruntu,
+                child: Container(
+                    alignment: Alignment.center,
+                    child: _buildTextMessage(textMessage)))
+          ],
+        ));
+  }
+
+  _buildTextMessage(String gelenText) {
+    return Text(
+      textMessage,
+      style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+    );
+  }
+
+  void doctorNavigator(dynamic page) async {
+    doktor = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => page));
+
+    if (doktor == null) {
+      doktorSecildiMi = false;
+    } else {
+      doktorSecildiMi = true;
+    }
+  }
+
+  showSelectedDoctor(bool secildiMih) {
+    String textMessage = " ";
+    if (secildiMih) {
+      setState(() {
+        textMessage = this.doktor.adi.toString() + " " + this.doktor.soyadi;
+      });
+      drGoruntu = 1.0;
+    } else {
+      drGoruntu = 0.0;
+    }
+
+    return Container(
+        decoration: BoxDecoration(),
+        child: Row(
+          children: <Widget>[
+            Text(
+              "Seçilen Doktor : ",
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            ),
+            Opacity(
+                opacity: goruntu,
+                child: Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    textMessage,
+                    style:
+                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                  ),
+                ))
+          ],
+        ));
+  }
+
+  Future<Null> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now().add(Duration(days: 1)),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2021),
+    );
+    randevuTarihi = picked;
+    saatTarihBirlesim = null;
+    tarihSecildiMi = false;
+  }
+
+  Widget dateOfAppointment() {
+    return Container(
+      padding: EdgeInsets.only(top: 5.0),
       child: Row(
         children: <Widget>[
           Text(
-            "Tarih Seçin ",
+            "Randevu Tarihi: ",
             style: TextStyle(fontSize: 19.0),
           ),
           RaisedButton(
-            child: Text("Tarih Seçin"),
-            onPressed: () {},
+            child: Text(raisedButtonText),
+            onPressed: () {
+              _selectDate(context).then((result) => setState(() {
+                    if (randevuTarihi == null) {
+                      raisedButtonText = "Tıkla ve Seç";
+                      tarihSecildiMi = false;
+                    } else {
+                      raisedButtonText =
+                          randevuTarihi.toString().substring(0, 10);
+                    }
+                  }));
+            },
           )
         ],
       ),
     );
   }
 
-  chooserTime() {
-    return Column(
-      children: <Widget>[
-        Container(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                "09.00 ",
-                style: TextStyle(fontSize: 19.0),
-              ),
-              RaisedButton(
-                child: Text(
-                  "Seç",
-                  style: TextStyle(fontSize: 12),
-                ),
-                onPressed: () {},
-              ),
-              Text(
-                "10.00 ",
-                style: TextStyle(fontSize: 19.0),
-              ),
-              RaisedButton(
-                child: Text(
-                  "Seç",
-                  style: TextStyle(fontSize: 12),
-                ),
-                onPressed: () {},
-              )
-            ],
-          ),
+  showSelectedDate(bool tarihSecildiMi) {
+    String textMessage = " ";
+    if (tarihSecildiMi) {
+      setState(() {
+        textMessage = saatTarihBirlesim.toString();
+      });
+      goruntuSaat = 1.0;
+    } else {
+      goruntuSaat = 0.0;
+    }
+
+    return Container(
+        decoration: BoxDecoration(),
+        child: Row(
+          children: <Widget>[
+            Text(
+              "Randevu Tarih ve Saati : ",
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            ),
+            Opacity(
+                opacity: goruntuSaat,
+                child: Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    textMessage,
+                    style:
+                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                  ),
+                ))
+          ],
+        ));
+  }
+
+  void basicNavigator(dynamic page) async {
+    saatTarihBirlesim = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => page));
+  }
+
+  void alrtAppointment(BuildContext context) {
+    var alertAppointment = AlertDialog(
+        title: Text(
+          "İşlem Özeti",
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        Container(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        actions: <Widget>[
+          Column(
             children: <Widget>[
-              Text(
-                "11.00 ",
-                style: TextStyle(fontSize: 19.0),
-              ),
-              RaisedButton(
-                child: Text(
-                  "Seç",
-                  style: TextStyle(fontSize: 12),
-                ),
-                onPressed: () {},
-              ),
-              Text(
-                "12.00 ",
-                style: TextStyle(fontSize: 19.0),
-              ),
-              RaisedButton(
-                child: Text(
-                  "Seç",
-                  style: TextStyle(fontSize: 12),
-                ),
-                onPressed: () {},
-              )
-            ],
+              showSelectedHospital(hastaneSecildiMi),
+          _showSelectedSection(bolumSecildiMi),
+          showSelectedDoctor(doktorSecildiMi),
+          showSelectedDate(tarihSecildiMi),
+          SizedBox(
+            height: 13.0,
           ),
-        ),
-        Container(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                "13.00 ",
-                style: TextStyle(fontSize: 19.0),
-              ),
-              RaisedButton(
-                child: Text(
-                  "Seç",
-                  style: TextStyle(fontSize: 12),
-                ),
-                onPressed: () {},
-              ),
-              Text(
-                "14.00 ",
-                style: TextStyle(fontSize: 19.0),
-              ),
-              RaisedButton(
-                child: Text(
-                  "Seç",
-                  style: TextStyle(fontSize: 12),
-                ),
-                onPressed: () {},
-              )
-            ],
+          Container(
+            child: FlatButton(
+            child: Text(
+              "Tamam",
+              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pop(context,true);
+              AddService().addDoctorAppointment(doktor);
+              AddService().addActiveAppointment(doktor, kullanici, saatTarihBirlesim);
+            },
           ),
-        ),
-        Container(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                "15.00 ",
-                style: TextStyle(fontSize: 19.0),
-              ),
-              RaisedButton(
-                child: Text(
-                  "Seç",
-                  style: TextStyle(fontSize: 12),
-                ),
-                onPressed: () {},
-              ),
-              Text(
-                "16.00 ",
-                style: TextStyle(fontSize: 19.0),
-              ),
-              RaisedButton(
-                child: Text(
-                  "Seç",
-                  style: TextStyle(fontSize: 12),
-                ),
-                onPressed: () {},
-              )
-            ],
           ),
-        ),
-      ],
+            ],
+          )
+        ]);
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertAppointment;
+        });
+  }
+
+  _buildDoneButton() {
+    return Container(
+      child: RaisedButton(
+        child: Text("Tamamla"),
+        onPressed: () {
+          if (hastaneSecildiMi && bolumSecildiMi && doktorSecildiMi && tarihSecildiMi && saatTarihBirlesim != null) {
+            alrtAppointment(context);
+            doktor.randevular.add(saatTarihBirlesim);
+          } else {
+            alrtHospital(context, "Eksik bilgi var");
+          }
+          
+        },
+      ),
     );
   }
 }
