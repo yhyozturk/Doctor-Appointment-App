@@ -27,7 +27,7 @@ class _AppointmentTimesState extends State<AppointmentTimes> {
     " , 16:00"
   ];
 
-  var result;
+  var result = "Seç";
 
   _AppointmentTimesState(this.randevuTarihi, this.doktor);
 
@@ -49,9 +49,22 @@ class _AppointmentTimesState extends State<AppointmentTimes> {
           title: Text("Randevu Saatleri"),
         ),
         body: Container(
-          padding: EdgeInsets.only(top: 50.0, left: 15.0, right: 15.0),
+          padding: EdgeInsets.only(top: 50.0, left: 25.0, right: 30.0),
           child: Column(
             children: <Widget>[
+              Container(
+                child: Text(
+                  "Belirtilen saatler randevu başlangıç saatleridir. Her randevuya 1 saat ayrılmaktadır.",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0,
+                      color: Colors.black),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              SizedBox(
+                height: 15.0,
+              ),
               chooserTime(),
             ],
           ),
@@ -66,20 +79,21 @@ class _AppointmentTimesState extends State<AppointmentTimes> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               _buildText("09:00"),
-              _buildButton(0),
+              _buildButton(0,result),
               _buildText("10:00"),
-              _buildButton(1),
+              _buildButton(1,result),
             ],
           ),
         ),
         Container(
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               _buildText("11:00"),
-              _buildButton(2),
-              _buildText("12:00"),
-              _buildButton(3),
+              SizedBox(
+                width: 20.0,
+              ),
+              _buildButton(2,result),
             ],
           ),
         ),
@@ -94,10 +108,10 @@ class _AppointmentTimesState extends State<AppointmentTimes> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
+              _buildText("13:00"),
+              _buildButton(3,result),
               _buildText("14:00"),
-              _buildButton(4),
-              _buildText("15:00"),
-              _buildButton(5),
+              _buildButton(4,result),
             ],
           ),
         ),
@@ -105,10 +119,10 @@ class _AppointmentTimesState extends State<AppointmentTimes> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
+              _buildText("15:00"),
+              _buildButton(5,result),
               _buildText("16:00"),
-              _buildButton(6),
-              _buildText("17:00"),
-              _buildButton(7),
+              _buildButton(6,result),
             ],
           ),
         ),
@@ -123,10 +137,10 @@ class _AppointmentTimesState extends State<AppointmentTimes> {
     );
   }
 
-  _buildButton(int index) {
+  _buildButton(int index, String textMessage) {
     return RaisedButton(
       child: Text(
-        "Seç",
+        textMessage,
         style: TextStyle(fontSize: 12.0),
       ),
       onPressed: () {
@@ -135,27 +149,20 @@ class _AppointmentTimesState extends State<AppointmentTimes> {
     );
   }
 
-  _buttonPressEvent(int index) {
-
-     Navigator.pop(context, birlesim[index]);
-    // if (result == true) {
-    //   Navigator.pop(context, birlesim[index]);
-    // } else if (result == false) {
-    //   alrtHospital(context, "Doktorun bu saat için randevusu mevcut");
-    // }
-  }
-
-  Future<bool> timeControl(int index) async {
-    result = await SearchService()
+  timeControl(int index) async {
+    await SearchService()
         .searchDoctorAppointment(doktor, birlesim[index])
-        .then((QuerySnapshot docs) {
-      if (docs.documents.isNotEmpty) {
-        return false;
-      } else {
-        return true;
+        .then((QuerySnapshot value) {
+      if (!value.documents[0].exists) {
+        setState(() {
+          result = "Seç";
+        });
       }
     });
-    return result;
+  }
+
+  _buttonPressEvent(int index) {
+    Navigator.pop(context, birlesim[index]);
   }
 
   void alrtHospital(BuildContext context, String message) {
