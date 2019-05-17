@@ -4,6 +4,7 @@ import 'package:fast_turtle_v2/models/adminModel.dart';
 import 'package:fast_turtle_v2/models/doktorModel.dart';
 import 'package:fast_turtle_v2/models/userModel.dart';
 import 'package:fast_turtle_v2/screens/adminHomePage.dart';
+import 'package:fast_turtle_v2/screens/doctorHomePage.dart';
 import 'package:fast_turtle_v2/screens/registerPage.dart';
 import 'package:fast_turtle_v2/screens/userHomePage.dart';
 import 'package:flutter/material.dart';
@@ -286,8 +287,10 @@ class WelcomePageState extends State
                 doktor.kimlikNo, doktor.sifre, 1, 'kimlikNo', 'sifre');
 
             if (kimlikNoDogrula && sifreDogrula) {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => UserHomePage(user)));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => DoctorHomePage(doktor)));
             }
           } else if (formKey == adminFormKey) {
             initiateSearch(

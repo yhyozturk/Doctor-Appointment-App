@@ -50,6 +50,20 @@ class SearchService {
         .getDocuments();
   }
 
+  searchHospitalById(int value) {
+    return Firestore.instance
+        .collection("tblHastane")
+        .where('hastaneId', isEqualTo: value)
+        .getDocuments();
+  }
+
+  searchSectionById(int value) {
+    return Firestore.instance
+        .collection("tblBolum")
+        .where('bolumId', isEqualTo: value)
+        .getDocuments();
+  }
+
   searchSectionsByHospitalId(int hospitalId) {
     return Firestore.instance
         .collection("tblBolum")
@@ -76,6 +90,13 @@ class SearchService {
   searchDoctorById(String kimlikNo) {
     return Firestore.instance
         .collection("tblDoktor")
+        .where('kimlikNo', isEqualTo: kimlikNo)
+        .getDocuments();
+  }
+
+  searchUserById(String kimlikNo) {
+    return Firestore.instance
+        .collection("tblKullanici")
         .where('kimlikNo', isEqualTo: kimlikNo)
         .getDocuments();
   }

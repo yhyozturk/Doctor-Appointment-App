@@ -1,21 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fast_turtle_v2/dbHelper/searchData.dart';
+import 'package:fast_turtle_v2/models/activeAppointmentModel.dart';
 import 'package:fast_turtle_v2/models/doktorModel.dart';
-import 'package:fast_turtle_v2/models/passiveAppoModel.dart';
 import 'package:fast_turtle_v2/models/userModel.dart';
 import 'package:flutter/material.dart';
 
-class AppointmentHistory extends StatefulWidget {
+class BuildAppointmentList extends StatefulWidget {
   final User user;
-  AppointmentHistory(this.user);
+  BuildAppointmentList(this.user);
   @override
-  _AppointmentHistoryState createState() => _AppointmentHistoryState(user);
+  _BuildAppointmentListState createState() => _BuildAppointmentListState(user);
 }
 
-class _AppointmentHistoryState extends State<AppointmentHistory> {
-  _AppointmentHistoryState(this.user);
+class _BuildAppointmentListState extends State<BuildAppointmentList> {
   User user;
+  _BuildAppointmentListState(this.user);
   Doktor doktor = Doktor();
+  Doktor doktor2 = Doktor();
 
   String gonder;
 
@@ -23,7 +24,7 @@ class _AppointmentHistoryState extends State<AppointmentHistory> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Geçmiş Randevularınız"),
+        title: Text("Aktif Randevularınız"),
       ),
       body: _buildStremBuilder(context),
     );
@@ -31,7 +32,10 @@ class _AppointmentHistoryState extends State<AppointmentHistory> {
 
   _buildStremBuilder(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection("tblRandevuGecmisi").snapshots(),
+      stream: Firestore.instance
+          .collection("tblAktifRandevu")
+          .where('hastaTCKN', isEqualTo: user.kimlikNo)
+          .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return LinearProgressIndicator();
@@ -52,7 +56,7 @@ class _AppointmentHistoryState extends State<AppointmentHistory> {
   }
 
   _buildListItem(BuildContext context, DocumentSnapshot data) {
-    final randevu = PassAppointment.fromSnapshot(data);
+    final randevu = ActiveAppointment.fromSnapshot(data);
     findDoktorName(randevu.doktorTCKN).then((value) {
       setState(() {
         gonder =
@@ -75,17 +79,19 @@ class _AppointmentHistoryState extends State<AppointmentHistory> {
             gonder.toString(),
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
           ),
-          subtitle: Text(randevu.islemTarihi),
+          subtitle: Text(randevu.randevuTarihi),
           onTap: () {},
         ),
       ),
     );
   }
 
-  findDoktorName(String sentId) async {
-    await SearchService().searchDoctorById(sentId).then((QuerySnapshot docs) {
+  Future<Null> findDoktorName(String sentId) async {
+    final Doktor value = await SearchService()
+        .searchDoctorById(sentId)
+        .then((QuerySnapshot docs) {
       doktor = Doktor.fromMap(docs.documents[0].data);
-      gonder = (doktor.adi + " " + doktor.soyadi).toString();
     });
+    doktor2 = value;
   }
 }

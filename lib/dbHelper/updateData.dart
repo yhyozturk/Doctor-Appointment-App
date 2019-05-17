@@ -5,12 +5,15 @@ import 'package:fast_turtle_v2/models/doktorModel.dart';
 import 'package:fast_turtle_v2/models/hospitalModel.dart';
 
 class UpdateService {
-  String updateUser(User user) {
+   updateUser(User user) {
     Firestore.instance
         .collection("tblKullanici")
         .document(user.reference.documentID)
-        .updateData({'sifre': user.sifre.toString()});
-    return "Güncelleme gerçekleştirildi";
+        .updateData({
+      'sifre': user.sifre.toString(),
+      'ad': user.adi,
+      'soyad': user.soyadi
+    });
   }
 
   String updateDoktor(Doktor doktor) {
@@ -24,7 +27,6 @@ class UpdateService {
     });
     return "Güncelleme gerçekleştirildi";
   }
-  
 
   String updateHastane(Hospital hastane) {
     Firestore.instance

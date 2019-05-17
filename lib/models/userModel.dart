@@ -11,14 +11,15 @@ class User {
 
   DocumentReference reference;
 
-  User(
-      {this.kimlikNo,
-      this.adi,
-      this.soyadi,
-      this.dogumTarihi,
-      this.cinsiyet,
-      this.sifre,
-      this.dogumYeri});
+  User({
+    this.kimlikNo,
+    this.adi,
+    this.soyadi,
+    this.dogumTarihi,
+    this.cinsiyet,
+    this.sifre,
+    this.dogumYeri,
+  });
 
   User.fromJson(Map<String, dynamic> json) {
     kimlikNo = json['kimlikNo'];
@@ -31,17 +32,16 @@ class User {
   }
 
   User.fromMap(Map<String, dynamic> map, {this.reference})
-      :kimlikNo = map["kimlikNo"],
-      sifre = map["sifre"],
-      adi = map["ad"],
-      soyadi = map["soyad"],
-      dogumYeri = map["dogumYeri"],
-      dogumTarihi = map["dogumTarihi"],
-      cinsiyet = map["cinsiyet"];
+      : kimlikNo = map["kimlikNo"],
+        sifre = map["sifre"],
+        adi = map["ad"],
+        soyadi = map["soyad"],
+        dogumYeri = map["dogumYeri"],
+        dogumTarihi = map["dogumTarihi"],
+        cinsiyet = map["cinsiyet"];
 
   User.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data, reference:snapshot.reference);
-
+      : this.fromMap(snapshot.data, reference: snapshot.reference);
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
