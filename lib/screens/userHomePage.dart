@@ -1,6 +1,8 @@
 import 'package:fast_turtle_v2/models/userModel.dart';
 import 'package:fast_turtle_v2/screens/appointmentHistory.dart';
 import 'package:fast_turtle_v2/screens/makeAppointment.dart';
+import 'package:fast_turtle_v2/screens/showActiveAppo.dart';
+import 'package:fast_turtle_v2/screens/updateUserInfo.dart';
 import 'package:flutter/material.dart';
 
 class UserHomePage extends StatefulWidget {
@@ -107,11 +109,19 @@ class UserHomePageState extends State {
                     SizedBox(
                       height: 5.0,
                     ),
+                    _aktifRandevularButonu(),
+                    SizedBox(
+                      height: 5.0,
+                    ),
                     _randevuGecmisiButonu(),
                     SizedBox(
                       height: 5.0,
                     ),
                     _hesapBilgileriButonu(),
+                    SizedBox(
+                      height: 5.0,
+                    ),
+                    _favoriListesiButonu(),
                     SizedBox(
                       height: 5.0,
                     ),
@@ -165,16 +175,16 @@ class UserHomePageState extends State {
           borderRadius: BorderRadius.all(Radius.circular(10.0)),
           color: Colors.white),
       child: FlatButton(
-        splashColor: Colors.grey,
-        highlightColor: Colors.white70,
-        child: Text(
-          "Randevu Al",
-          style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
-        ),
-        onPressed: (){
-          basicNavigator(MakeAppointment(kullanici));
-        }
-      ),
+          splashColor: Colors.grey,
+          highlightColor: Colors.white70,
+          child: Text(
+            "Randevu Al",
+            style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+          ),
+          onPressed: () {
+            basicNavigator(MakeAppointment(kullanici),
+                "Randevu Kaydınız Başarıyla Alındı. Şimdiden Geçmiş Olsun :)");
+          }),
     );
   }
 
@@ -192,7 +202,54 @@ class UserHomePageState extends State {
           "Randevu Geçmişi",
           style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
         ),
-        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=> AppointmentHistory())),
+        onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AppointmentHistory(kullanici))),
+      ),
+    );
+  }
+
+  _aktifRandevularButonu() {
+    return Container(
+      padding: EdgeInsets.all(1.0),
+      width: 390.0,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          color: Colors.white),
+      child: FlatButton(
+        splashColor: Colors.grey,
+        highlightColor: Colors.white70,
+        child: Text(
+          "Aktif Randevuları Listele",
+          style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+        ),
+        onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => BuildAppointmentList(kullanici))),
+      ),
+    );
+  }
+
+  _favoriListesiButonu() {
+    return Container(
+      padding: EdgeInsets.all(1.0),
+      width: 390.0,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          color: Colors.white),
+      child: FlatButton(
+        splashColor: Colors.grey,
+        highlightColor: Colors.white70,
+        child: Text(
+          "Favorileri Görüntüle",
+          style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+        ),
+        onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AppointmentHistory(kullanici))),
       ),
     );
   }
@@ -208,27 +265,29 @@ class UserHomePageState extends State {
         splashColor: Colors.grey,
         highlightColor: Colors.white70,
         child: Text(
-          "Hesap Bilgileri",
+          "Bilgileri Güncelle",
           style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
         ),
-        onPressed: () {},
+        onPressed: () {
+          basicNavigator(UpdateUser(kullanici), "İşlem Tamamlandı");
+        },
       ),
     );
   }
 
-  void basicNavigator(dynamic page) async {
+  void basicNavigator(dynamic page, String message) async {
     bool result = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => page));
 
     if (result != null && result == true) {
-      alrtHospital(context, " Şimdiden Geçmiş Olsun :)");
+      alrtHospital(context, message);
     }
   }
 
   void alrtHospital(BuildContext context, String message) {
     var alertDoctor = AlertDialog(
       title: Text(
-        "Randevu Kaydınız Başarıyla Alındı",
+        "Bilgilendirme!",
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
       content: Text(message),
@@ -252,10 +311,12 @@ class UserHomePageState extends State {
         splashColor: Colors.grey,
         highlightColor: Colors.white70,
         child: Text(
-          "Farklı Kullanıcı ile Giriş",
+          "Güvenli Çıkış",
           style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
         ),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pop(context);
+        },
       ),
     );
   }

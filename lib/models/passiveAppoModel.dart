@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Appointment {
+class PassAppointment {
   int kayitId;
   String doktorTCKN;
   String hastaTCKN;
@@ -8,9 +8,9 @@ class Appointment {
 
   DocumentReference reference;
 
-  Appointment({this.kayitId, this.doktorTCKN, this.hastaTCKN, this.islemTarihi});
+  PassAppointment({this.kayitId, this.doktorTCKN, this.hastaTCKN, this.islemTarihi});
 
-  Appointment.fromJson(Map<String, dynamic> json) {
+  PassAppointment.fromJson(Map<String, dynamic> json) {
     kayitId = json['kayitId'];
     doktorTCKN = json['doktorTCKN'];
     hastaTCKN = json['hastaTCKN'];
@@ -26,12 +26,12 @@ class Appointment {
     return data;
   }
 
-  Appointment.fromMap(Map<String, dynamic> map, {this.reference})
+  PassAppointment.fromMap(Map<String, dynamic> map, {this.reference})
       : kayitId = map['kayitId'],
         doktorTCKN = map['doktorTCKN'],
         hastaTCKN = map['hastaTCKN'],
         islemTarihi = map['islemTarihi'];
 
-  Appointment.fromSnapshot(DocumentSnapshot snapshot)
+  PassAppointment.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data, reference: snapshot.reference);
 }

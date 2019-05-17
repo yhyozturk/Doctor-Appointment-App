@@ -88,3 +88,10 @@ This is a school project written wiht Flutter.
  *Build an algorithm to add an appointment on database,
  *AddAppointmentPage design added
 
+ ## 17_May_2019 v2
+
+ *doctorHomePage, updateDoctorPass, showActiveAppo and updateUserInfo pages added,
+ *I found some bugs on appointment algorithm - TODO: fix the bugs,
+ *Some changes on other pages,
+ *TODO : Need to search about data transfer normalization
+
