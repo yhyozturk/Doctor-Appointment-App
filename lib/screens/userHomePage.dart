@@ -171,7 +171,9 @@ class UserHomePageState extends State {
           "Randevu Al",
           style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
         ),
-        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=> MakeAppointment())),
+        onPressed: (){
+          basicNavigator(MakeAppointment(kullanici));
+        }
       ),
     );
   }
@@ -212,6 +214,31 @@ class UserHomePageState extends State {
         onPressed: () {},
       ),
     );
+  }
+
+  void basicNavigator(dynamic page) async {
+    bool result = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => page));
+
+    if (result != null && result == true) {
+      alrtHospital(context, " Şimdiden Geçmiş Olsun :)");
+    }
+  }
+
+  void alrtHospital(BuildContext context, String message) {
+    var alertDoctor = AlertDialog(
+      title: Text(
+        "Randevu Kaydınız Başarıyla Alındı",
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      content: Text(message),
+    );
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDoctor;
+        });
   }
 
   _cikisYapButonu() {

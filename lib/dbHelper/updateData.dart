@@ -24,6 +24,7 @@ class UpdateService {
     });
     return "Güncelleme gerçekleştirildi";
   }
+  
 
   String updateHastane(Hospital hastane) {
     Firestore.instance

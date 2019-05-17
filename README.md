@@ -83,3 +83,8 @@ This is a school project written wiht Flutter.
  *DeleteSection and deleteHospital page and method added,
  *All delete function work and stable
 
+ ## 17_May_2019 v1
+
+ *Build an algorithm to add an appointment on database,
+ *AddAppointmentPage design added
+

@@ -31,6 +31,22 @@ class AddService {
     });
   }
 
+  void addActiveAppointment(Doktor dr, User user, String tarih){
+    Firestore.instance.collection('tblAktifRandevu').document().setData({
+      'doktorTCKN' : dr.kimlikNo,
+      'hastaTCKN' : user.kimlikNo,
+      'randevuTarihi' : tarih
+    });
+  }
+
+   addDoctorAppointment(Doktor doktor) {
+    Firestore.instance
+        .collection("tblDoktor")
+        .document(doktor.reference.documentID).setData({
+          'randevular' : doktor.randevular
+        },merge: true);
+  }
+
   String saveAdmin(Admin admin) {
     Firestore.instance.collection("tblAdmin").document().setData({
       'Id': admin.id,
