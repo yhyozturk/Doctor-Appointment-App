@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fast_turtle_v2/models/doktorModel.dart';
 
 class SearchService {
   searchById(String gelenId, String gelenPassword, int formKey) {
@@ -61,6 +62,14 @@ class SearchService {
         .collection("tblBolum")
         .where('hastaneId', isEqualTo: hospitalId)
         .where('bolumAdi', isEqualTo: sectionName)
+        .getDocuments();
+  }
+
+  searchDoctorAppointment(Doktor doktor, String tarih) {
+    return Firestore.instance
+        .collection("tblAktifRandevu")
+        .where('doktorTCKN', isEqualTo: doktor.kimlikNo)
+        .where('randevuTarihi', isEqualTo: tarih)
         .getDocuments();
   }
 
