@@ -3,6 +3,7 @@ import 'package:fast_turtle_v2/dbHelper/searchData.dart';
 import 'package:fast_turtle_v2/models/doktorModel.dart';
 import 'package:fast_turtle_v2/models/hospitalModel.dart';
 import 'package:fast_turtle_v2/models/sectionModel.dart';
+import 'package:fast_turtle_v2/screens/showAppoForDoc.dart';
 import 'package:fast_turtle_v2/screens/updateDoctorPass.dart';
 import 'package:flutter/material.dart';
 
@@ -37,6 +38,11 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
+    String hastaneAdi, bolumAdi;
+    setState(() {
+      hastaneAdi = hastane.hastaneAdi.toString();
+      bolumAdi = bolum.bolumAdi;
+    });
     return Scaffold(
         appBar: AppBar(
           title: Text("Doktor Ana Sayfası"),
@@ -121,7 +127,7 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
                         padding: EdgeInsets.only(top: 20.0, left: 13.0),
                         child: Container(
                           child: Text(
-                            hastane.hastaneAdi.toString(),
+                            hastaneAdi,
                             style: TextStyle(
                                 fontSize: 15.0, fontWeight: FontWeight.bold),
                           ),
@@ -129,7 +135,7 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
                       )
                     ],
                   ),
-                  _buildAttributeRow("Bölüm ", bolum.bolumAdi.toString()),
+                  _buildAttributeRow("Bölüm ", bolumAdi.toString()),
                   SizedBox(
                     height: 30.0,
                   )
@@ -229,7 +235,13 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
           "Randevuları Görüntüle",
           style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
         ),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      BuildAppointmentListForDoctor(_doktor)));
+        },
       ),
     );
   }

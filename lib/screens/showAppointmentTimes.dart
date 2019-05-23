@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fast_turtle_v2/dbHelper/searchData.dart';
 import 'package:fast_turtle_v2/models/doktorModel.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +15,7 @@ class _AppointmentTimesState extends State<AppointmentTimes> {
   String randevuTarihi;
   Doktor doktor;
   List<String> birlesim = [];
+  List<bool> birlesimKontrol = [];
   List<String> saatler = [
     " , 09:00",
     " , 10:00",
@@ -37,6 +36,13 @@ class _AppointmentTimesState extends State<AppointmentTimes> {
     for (var item in saatler) {
       birlesim
           .add((randevuTarihi.toString().substring(0, 10) + item).toString());
+    }
+    for (var i = 0; i < birlesim.length; i++) {
+      if (doktor.randevular.contains(birlesim[i])) {
+        birlesimKontrol.insert(i, false);
+      } else {
+        birlesimKontrol.insert(i, true);
+      }
     }
   }
 
@@ -79,9 +85,9 @@ class _AppointmentTimesState extends State<AppointmentTimes> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               _buildText("09:00"),
-              _buildButton(0,result),
+              _buildButton(0, result),
               _buildText("10:00"),
-              _buildButton(1,result),
+              _buildButton(1, result),
             ],
           ),
         ),
@@ -93,7 +99,7 @@ class _AppointmentTimesState extends State<AppointmentTimes> {
               SizedBox(
                 width: 20.0,
               ),
-              _buildButton(2,result),
+              _buildButton(2, result),
             ],
           ),
         ),
@@ -109,9 +115,9 @@ class _AppointmentTimesState extends State<AppointmentTimes> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               _buildText("13:00"),
-              _buildButton(3,result),
+              _buildButton(3, result),
               _buildText("14:00"),
-              _buildButton(4,result),
+              _buildButton(4, result),
             ],
           ),
         ),
@@ -120,9 +126,9 @@ class _AppointmentTimesState extends State<AppointmentTimes> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               _buildText("15:00"),
-              _buildButton(5,result),
+              _buildButton(5, result),
               _buildText("16:00"),
-              _buildButton(6,result),
+              _buildButton(6, result),
             ],
           ),
         ),
@@ -138,31 +144,34 @@ class _AppointmentTimesState extends State<AppointmentTimes> {
   }
 
   _buildButton(int index, String textMessage) {
-    return RaisedButton(
-      child: Text(
-        textMessage,
-        style: TextStyle(fontSize: 12.0),
+    chooseColor() {
+      if (birlesimKontrol[index]) {
+        return Colors.greenAccent;
+      } else {
+        return Colors.redAccent;
+      }
+    }
+
+    return Container(
+      decoration: BoxDecoration(color: chooseColor()),
+      child: FlatButton(
+        child: Text(
+          textMessage,
+          style: TextStyle(fontSize: 12.0),
+        ),
+        onPressed: () {
+          _buttonPressEvent(index);
+        },
       ),
-      onPressed: () {
-        _buttonPressEvent(index);
-      },
     );
   }
 
-  timeControl(int index) async {
-    await SearchService()
-        .searchDoctorAppointment(doktor, birlesim[index])
-        .then((QuerySnapshot value) {
-      if (!value.documents[0].exists) {
-        setState(() {
-          result = "Seç";
-        });
-      }
-    });
-  }
-
   _buttonPressEvent(int index) {
-    Navigator.pop(context, birlesim[index]);
+    if (birlesimKontrol[index]) {
+      Navigator.pop(context, birlesim[index]);
+    } else {
+      alrtHospital(context, "Bu seans seçilemez.");
+    }
   }
 
   void alrtHospital(BuildContext context, String message) {

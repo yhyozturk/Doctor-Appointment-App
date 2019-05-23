@@ -1,20 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fast_turtle_v2/dbHelper/addData.dart';
 import 'package:fast_turtle_v2/dbHelper/delData.dart';
 import 'package:fast_turtle_v2/dbHelper/updateData.dart';
 import 'package:fast_turtle_v2/models/activeAppointmentModel.dart';
-import 'package:fast_turtle_v2/models/userModel.dart';
+import 'package:fast_turtle_v2/models/doktorModel.dart';
 import 'package:flutter/material.dart';
 
-class BuildAppointmentList extends StatefulWidget {
-  final User user;
-  BuildAppointmentList(this.user);
+class BuildAppointmentListForDoctor extends StatefulWidget {
+  final Doktor doktor;
+  BuildAppointmentListForDoctor(this.doktor);
   @override
-  _BuildAppointmentListState createState() => _BuildAppointmentListState(user);
+  _BuildAppointmentListState createState() =>
+      _BuildAppointmentListState(doktor);
 }
 
-class _BuildAppointmentListState extends State<BuildAppointmentList> {
-  User user;
-  _BuildAppointmentListState(this.user);
+class _BuildAppointmentListState extends State<BuildAppointmentListForDoctor> {
+  Doktor doktor;
+  _BuildAppointmentListState(this.doktor);
 
   String gonder;
 
@@ -32,7 +34,7 @@ class _BuildAppointmentListState extends State<BuildAppointmentList> {
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance
           .collection("tblAktifRandevu")
-          .where('hastaTCKN', isEqualTo: user.kimlikNo)
+          .where('doktorTCKN', isEqualTo: doktor.kimlikNo)
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
@@ -55,7 +57,6 @@ class _BuildAppointmentListState extends State<BuildAppointmentList> {
 
   _buildListItem(BuildContext context, DocumentSnapshot data) {
     final randevu = ActiveAppointment.fromSnapshot(data);
-
     return Padding(
       key: ValueKey(randevu.reference),
       padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -66,49 +67,44 @@ class _BuildAppointmentListState extends State<BuildAppointmentList> {
             borderRadius: BorderRadius.circular(10.0)),
         child: ListTile(
           leading: CircleAvatar(
-            child: Icon(Icons.healing),
+            child: Icon(Icons.person),
           ),
           title: Row(
             children: <Widget>[
               Text(
-                randevu.doktorAdi.toString(),
+                randevu.hastaAdi.toString(),
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
               ),
               SizedBox(
                 width: 3.0,
               ),
               Text(
-                randevu.doktorSoyadi.toString(),
+                randevu.hastaSoyadi.toString(),
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
               ),
             ],
           ),
           subtitle: Text(randevu.randevuTarihi),
-          trailing: Text("İptal Et",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.redAccent),),
+          trailing: Text(
+            "Tamamla",
+            style:
+                TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
+          ),
           onTap: () {
-            alrtRandevuIptalEt(context, randevu);
+            alrtRandevuTamamla(context, randevu);
           },
         ),
       ),
     );
   }
 
-  void alrtRandevuIptalEt(BuildContext context, ActiveAppointment rand) {
+  void alrtRandevuTamamla(BuildContext context, ActiveAppointment rand) {
     var alrtRandevu = AlertDialog(
       title: Text(
-        "Randevuyu iptal etmek istediğinize emin misiniz?",
+        "Randevuyu Bitir",
         style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
       ),
       actions: <Widget>[
-        FlatButton(
-          child: Text("Hayır"),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        SizedBox(
-          width: 5.0,
-        ),
         FlatButton(
           child: Text(
             "Evet",
@@ -116,10 +112,11 @@ class _BuildAppointmentListState extends State<BuildAppointmentList> {
           ),
           onPressed: () {
             UpdateService()
-                .updateDoctorAppointments(rand.doktorTCKN, rand.randevuTarihi);
+                .updateDoctorAppointments(doktor.kimlikNo, rand.randevuTarihi);
             DelService().deleteActiveAppointment(rand);
+            AddService().addPastAppointment(rand);
             Navigator.pop(context);
-            Navigator.pop(context,true);
+            Navigator.pop(context);
           },
         )
       ],
