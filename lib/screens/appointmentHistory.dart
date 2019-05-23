@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fast_turtle_v2/dbHelper/addData.dart';
+import 'package:fast_turtle_v2/dbHelper/searchData.dart';
 import 'package:fast_turtle_v2/dbHelper/updateData.dart';
 import 'package:fast_turtle_v2/models/passiveAppoModel.dart';
 import 'package:fast_turtle_v2/models/userModel.dart';
@@ -115,11 +117,19 @@ class _AppointmentHistoryState extends State<AppointmentHistory> {
             textAlign: TextAlign.center,
           ),
           onPressed: () {
-            UpdateService().updateUserFavList(
-                user.kimlikNo, (rand.doktorTCKN+" , "+rand.doktorAdi + " " + rand.doktorSoyadi));
-                UpdateService().updateDoktorFavCount(rand.doktorTCKN);
-            Navigator.pop(context);
-            Navigator.pop(context, true);
+            SearchService()
+                .searchDocOnUserFavList(rand)
+                .then((QuerySnapshot docs) {
+              if (docs.documents.isEmpty) {
+                AddService().addDoctorToUserFavList(rand);
+                UpdateService().updateDoktorFavCountPlus(rand.doktorTCKN);
+                Navigator.pop(context);
+                Navigator.pop(context, true);
+              } else {
+                Navigator.pop(context);
+                alrtHospital(context, "Favori listenizde olan bir doktoru tekrar ekleyemezsiniz.");
+              }
+            });
           },
         )
       ],
@@ -129,6 +139,22 @@ class _AppointmentHistoryState extends State<AppointmentHistory> {
         context: context,
         builder: (BuildContext context) {
           return alrtRandevu;
+        });
+  }
+
+  void alrtHospital(BuildContext context, String message) {
+    var alertDoctor = AlertDialog(
+      title: Text(
+        "Bilgilendirme!",
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      content: Text(message),
+    );
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDoctor;
         });
   }
 }

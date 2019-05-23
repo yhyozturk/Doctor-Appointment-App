@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fast_turtle_v2/models/activeAppointmentModel.dart';
 import 'package:fast_turtle_v2/models/doktorModel.dart';
+import 'package:fast_turtle_v2/models/favListModel.dart';
 import 'package:fast_turtle_v2/models/hospitalModel.dart';
 import 'package:fast_turtle_v2/models/sectionModel.dart';
 
@@ -33,6 +34,13 @@ class DelService {
     Firestore.instance
         .collection('tblAktifRandevu')
         .document(randevu.reference.documentID)
+        .delete();
+  }
+
+  deleteDocFromUserFavList(FavoriteList fav) {
+    Firestore.instance
+        .collection('tblFavoriler')
+        .document(fav.reference.documentID)
         .delete();
   }
 

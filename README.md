@@ -106,3 +106,10 @@ This is a school project written wiht Flutter.
 
  *Some logical corrections on deleteHospitalPage, deleteSectionPage and makeAppointment.dart
 
+ ## 24_May_2019 v1
+
+ *showUserFavList page added,
+ *favListModel added,
+ *closeAppointment function added for admin
+ *Some changes on appointmentHistory, adminModel and all dbHelper functions
+

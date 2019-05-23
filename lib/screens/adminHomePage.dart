@@ -6,7 +6,7 @@ import 'package:fast_turtle_v2/screens/addSectionPage.dart';
 import 'package:fast_turtle_v2/screens/deleteDoctorPage.dart';
 import 'package:fast_turtle_v2/screens/deleteHospitalPage.dart';
 import 'package:fast_turtle_v2/screens/deleteSectionPage.dart';
-import 'package:fast_turtle_v2/screens/openCloseAppointmentPage.dart';
+import 'package:fast_turtle_v2/screens/closeAppointmentPage.dart';
 import 'package:fast_turtle_v2/screens/updateDoctorPage.dart';
 import 'package:fast_turtle_v2/screens/updateHospitalPage.dart';
 import 'package:fast_turtle_v2/screens/updateSectionPage.dart';
@@ -208,14 +208,14 @@ class _AdminHomePageState extends State<AdminHomePage> {
     return Container(
       child: Column(
         children: <Widget>[
-          _butonOlustur("Randevu Aç/Kapat", 9),
+          _butonOlustur("Randevu Kapat", 9),
           SizedBox(
             height: 5.0,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              _butonOlustur("Admin Ekle", 10),
+              _butonOlustur("Randevu Aç", 10),
               SizedBox(
                 width: 10.0,
               ),
@@ -275,7 +275,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
 
               break;
             case 9:
-              basicNavigator(OpenCloseAppointment());
+              basicNavigator(CloseAppointment(_admin));
 
               break;
             case 10:

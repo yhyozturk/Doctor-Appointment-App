@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fast_turtle_v2/models/doktorModel.dart';
+import 'package:fast_turtle_v2/models/passiveAppoModel.dart';
 
 class SearchService {
   searchById(String gelenId, String gelenPassword, int formKey) {
@@ -151,6 +152,14 @@ class SearchService {
         .collection("tblAktifRandevu")
         .where('hastaTCKN', isEqualTo: hastaTCKN)
         .where('doktorTCKN', isEqualTo: doktorTCKN)
+        .getDocuments();
+  }
+
+  searchDocOnUserFavList(PassAppointment rand) {
+    return Firestore.instance
+        .collection("tblFavoriler")
+        .where('hastaTCKN', isEqualTo: rand.hastaTCKN)
+        .where('doktorTCKN', isEqualTo: rand.doktorTCKN)
         .getDocuments();
   }
 }

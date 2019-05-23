@@ -17,23 +17,23 @@ class UpdateService {
     });
   }
 
-  String updateUserFavList(String kimlikNo, String doktorAdSoyad) {
-    User temp;
-    SearchService().searchUserById(kimlikNo).then((QuerySnapshot docs) {
-      temp = User.fromMap(docs.documents[0].data);
-      temp.reference = docs.documents[0].reference;
-      if (!temp.favoriDoktorlar.contains(doktorAdSoyad)) {
-        temp.favoriDoktorlar.add(doktorAdSoyad);
+  // String updateUserFavList(String kimlikNo, String doktorAdSoyad) {
+  //   User temp;
+  //   SearchService().searchUserById(kimlikNo).then((QuerySnapshot docs) {
+  //     temp = User.fromMap(docs.documents[0].data);
+  //     temp.reference = docs.documents[0].reference;
+  //     if (!temp.favoriDoktorlar.contains(doktorAdSoyad)) {
+  //       temp.favoriDoktorlar.add(doktorAdSoyad);
 
-        Firestore.instance
-            .collection("tblKullanici")
-            .document(temp.reference.documentID)
-            .updateData({'favoriDoktorlar': temp.favoriDoktorlar});
-      }
-    });
+  //       Firestore.instance
+  //           .collection("tblKullanici")
+  //           .document(temp.reference.documentID)
+  //           .updateData({'favoriDoktorlar': temp.favoriDoktorlar});
+  //     }
+  //   });
 
-    return "Güncelleme gerçekleştirildi";
-  }
+  //   return "Güncelleme gerçekleştirildi";
+  // }
 
   String updateDoktor(Doktor doktor) {
     Firestore.instance
@@ -47,7 +47,7 @@ class UpdateService {
     return "Güncelleme gerçekleştirildi";
   }
 
-  String updateDoktorFavCount(String doktorNo) {
+  String updateDoktorFavCountPlus(String doktorNo) {
     Doktor doktor;
     SearchService().searchDoctorById(doktorNo).then((QuerySnapshot docs) {
       doktor = Doktor.fromMap(docs.documents[0].data);
@@ -56,6 +56,20 @@ class UpdateService {
           .collection("tblDoktor")
           .document(doktor.reference.documentID)
           .updateData({'favoriSayaci': doktor.favoriSayaci + 1});
+    });
+
+    return "Güncelleme gerçekleştirildi";
+  }
+
+  String updateDoktorFavCountMinus(String doktorNo) {
+    Doktor doktor;
+    SearchService().searchDoctorById(doktorNo).then((QuerySnapshot docs) {
+      doktor = Doktor.fromMap(docs.documents[0].data);
+      doktor.reference = docs.documents[0].reference;
+      Firestore.instance
+          .collection("tblDoktor")
+          .document(doktor.reference.documentID)
+          .updateData({'favoriSayaci': doktor.favoriSayaci - 1});
     });
 
     return "Güncelleme gerçekleştirildi";

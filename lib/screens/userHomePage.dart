@@ -2,6 +2,7 @@ import 'package:fast_turtle_v2/models/userModel.dart';
 import 'package:fast_turtle_v2/screens/appointmentHistory.dart';
 import 'package:fast_turtle_v2/screens/makeAppointment.dart';
 import 'package:fast_turtle_v2/screens/showActiveAppo.dart';
+import 'package:fast_turtle_v2/screens/showUserFavList.dart';
 import 'package:fast_turtle_v2/screens/updateUserInfo.dart';
 import 'package:flutter/material.dart';
 
@@ -90,8 +91,10 @@ class UserHomePageState extends State {
                           "T.C. Kimlik Numarası", kullanici.kimlikNo),
                       _buildAttributeRow(
                           "Cinsiyet", kullanici.cinsiyet.toString()),
-                      _buildAttributeRow("Doğum Yeri", kullanici.dogumYeri.toString()),
-                      _buildAttributeRow("Doğum Tarihi", kullanici.dogumTarihi.toString()),
+                      _buildAttributeRow(
+                          "Doğum Yeri", kullanici.dogumYeri.toString()),
+                      _buildAttributeRow(
+                          "Doğum Tarihi", kullanici.dogumTarihi.toString()),
                       SizedBox(
                         height: 30.0,
                       )
@@ -218,16 +221,15 @@ class UserHomePageState extends State {
           borderRadius: BorderRadius.all(Radius.circular(10.0)),
           color: Colors.white),
       child: FlatButton(
-        splashColor: Colors.grey,
-        highlightColor: Colors.white70,
-        child: Text(
-          "Aktif Randevuları Listele",
-          style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
-        ),
-        onPressed: () {
-          basicNavigator(BuildAppointmentList(kullanici), "İşlem Tamamlandı");
-        }
-      ),
+          splashColor: Colors.grey,
+          highlightColor: Colors.white70,
+          child: Text(
+            "Aktif Randevuları Listele",
+            style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+          ),
+          onPressed: () {
+            basicNavigator(BuildAppointmentList(kullanici), "İşlem Tamamlandı");
+          }),
     );
   }
 
@@ -239,17 +241,15 @@ class UserHomePageState extends State {
           borderRadius: BorderRadius.all(Radius.circular(10.0)),
           color: Colors.white),
       child: FlatButton(
-        splashColor: Colors.grey,
-        highlightColor: Colors.white70,
-        child: Text(
-          "Favorileri Görüntüle",
-          style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
-        ),
-        onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => AppointmentHistory(kullanici))),
-      ),
+          splashColor: Colors.grey,
+          highlightColor: Colors.white70,
+          child: Text(
+            "Favorileri Görüntüle",
+            style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+          ),
+          onPressed: () {
+            basicNavigator(BuildUserFavList(kullanici), "İşlem Tamamlandı");
+          }),
     );
   }
 
