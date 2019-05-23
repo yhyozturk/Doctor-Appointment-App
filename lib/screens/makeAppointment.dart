@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fast_turtle_v2/dbHelper/addData.dart';
 import 'package:fast_turtle_v2/dbHelper/searchData.dart';
+import 'package:fast_turtle_v2/models/activeAppointmentModel.dart';
 import 'package:fast_turtle_v2/models/doktorModel.dart';
 import 'package:fast_turtle_v2/models/hospitalModel.dart';
 import 'package:fast_turtle_v2/models/sectionModel.dart';
@@ -25,6 +26,8 @@ class MakeAppointmentState extends State<MakeAppointment> {
   bool bolumSecildiMi = false;
   bool doktorSecildiMi = false;
   bool tarihSecildiMi = false;
+  bool appointmentControl1;
+  bool appointmentControl2;
 
   double drGoruntu = 0.0;
   double goruntu = 0.0;
@@ -64,6 +67,7 @@ class MakeAppointmentState extends State<MakeAppointment> {
                     onPressed: () {
                       bolumSecildiMi = false;
                       doktorSecildiMi = false;
+                      tarihSecildiMi = false;
                       hospitalNavigator(BuildHospitalList());
                     },
                   ),
@@ -78,6 +82,7 @@ class MakeAppointmentState extends State<MakeAppointment> {
                       if (hastaneSecildiMi) {
                         doktorSecildiMi = false;
                         drGoruntu = 0.0;
+                        tarihSecildiMi = false;
                         sectionNavigator(BuildSectionList(hastane));
                       } else {
                         alrtHospital(
@@ -435,8 +440,36 @@ class MakeAppointmentState extends State<MakeAppointment> {
                 .searchDoctorAppointment(doktor, saatTarihBirlesim)
                 .then((QuerySnapshot docs) {
               if (docs.documents.isEmpty) {
-                alrtAppointment(context);
-                doktor.randevular.add(saatTarihBirlesim);
+                SearchService()
+                    .searchActiveAppointmentsByHastaTCKN(kullanici.kimlikNo)
+                    .then((QuerySnapshot docs) {
+                  for (var i = 0; i < docs.documents.length; i++) {
+                    ActiveAppointment rand =
+                        ActiveAppointment.fromMap(docs.documents[i].data);
+                    if (rand.randevuTarihi.contains(saatTarihBirlesim)) {
+                      alrtHospital(context,
+                          "Aynı gün ve saatte 2 farklı doktordan randevunuz olamaz");
+                    } else {
+                      SearchService()
+                          .searchActiveAppointmentsWithHastaTCKNAndDoctorTCKN(
+                              kullanici.kimlikNo, doktor.kimlikNo)
+                          .then((QuerySnapshot docs) {
+                        for (var i = 0; i < docs.documents.length; i++) {
+                          ActiveAppointment rand =
+                              ActiveAppointment.fromMap(docs.documents[i].data);
+                          if (rand.randevuTarihi.contains(
+                              randevuTarihi.toString().substring(0, 10))) {
+                            alrtHospital(context,
+                                "Gün içerisinde aynı doktordan 2 randevunuz olamaz");
+                          } else {
+                            alrtAppointment(context);
+                            doktor.randevular.add(saatTarihBirlesim);
+                          }
+                        }
+                      });
+                    }
+                  }
+                });
               } else {
                 alrtHospital(context, "Bu seans dolu");
               }
@@ -448,4 +481,10 @@ class MakeAppointmentState extends State<MakeAppointment> {
       ),
     );
   }
+
+  //kullanıcının aynı gün ve saatte başka doktora randevusu olup olmadığını kontrol eder.
+  buildAppointmentControl1() {}
+
+  // kullanıcının gün içerisinde aynı doktordan randevusu olup olmadığını kontrol eder.
+  buildAppointmentControl2() {}
 }

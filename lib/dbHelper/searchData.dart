@@ -127,14 +127,30 @@ class SearchService {
     return Firestore.instance.collection("tblDoktor").getDocuments();
   }
 
-  getAppointments() {
+  getPastAppointments() {
     return Firestore.instance.collection("tblRandevuGecmisi").getDocuments();
   }
 
-  searchAppointmentsByHastaTCKN(String tckn) {
+  searchPastAppointmentsByHastaTCKN(String tckn) {
     return Firestore.instance
         .collection("tblRandevuGecmisi")
         .where('hastaTCKN', isEqualTo: tckn)
+        .getDocuments();
+  }
+
+  searchActiveAppointmentsByHastaTCKN(String tckn) {
+    return Firestore.instance
+        .collection("tblAktifRandevu")
+        .where('hastaTCKN', isEqualTo: tckn)
+        .getDocuments();
+  }
+
+  searchActiveAppointmentsWithHastaTCKNAndDoctorTCKN(
+      String hastaTCKN, String doktorTCKN) {
+    return Firestore.instance
+        .collection("tblAktifRandevu")
+        .where('hastaTCKN', isEqualTo: hastaTCKN)
+        .where('doktorTCKN', isEqualTo: doktorTCKN)
         .getDocuments();
   }
 }

@@ -102,3 +102,7 @@ This is a school project written wiht Flutter.
  *AppointmentTimesPage added,
  *Some changes on other pages,
 
+ ## 23_May_2019 v2
+
+ *Some logical corrections on deleteHospitalPage, deleteSectionPage and makeAppointment.dart
+
