@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fast_turtle_v2/dbHelper/searchData.dart';
 import 'package:fast_turtle_v2/models/activeAppointmentModel.dart';
+import 'package:fast_turtle_v2/models/passiveAppoModel.dart';
 import 'package:fast_turtle_v2/models/sectionModel.dart';
 import 'package:fast_turtle_v2/models/userModel.dart';
 import 'package:fast_turtle_v2/models/doktorModel.dart';
@@ -44,6 +45,17 @@ class AddService {
     });
   }
 
+  void addDoctorToUserFavList(PassAppointment rand) {
+    Firestore.instance.collection('tblFavoriler').document().setData({
+      'doktorTCKN': rand.doktorTCKN,
+      'hastaTCKN': rand.hastaTCKN,
+      'doktorAdi': rand.doktorAdi,
+      'doktorSoyadi': rand.doktorSoyadi,
+      'hastaAdi': rand.hastaAdi,
+      'hastaSoyadi': rand.hastaSoyadi
+    });
+  }
+
   void addPastAppointment(ActiveAppointment randevu) {
     Firestore.instance.collection('tblRandevuGecmisi').document().setData({
       'doktorTCKN': randevu.doktorTCKN,
@@ -61,6 +73,13 @@ class AddService {
         .collection("tblDoktor")
         .document(doktor.reference.documentID)
         .setData({'randevular': doktor.randevular}, merge: true);
+  }
+
+  closeDoctorAppointment(Admin admin) {
+    Firestore.instance
+        .collection("tblAdmin")
+        .document(admin.reference.documentID)
+        .setData({'kapatilanSaatler': admin.kapatilanSaatler}, merge: true);
   }
 
   String saveAdmin(Admin admin) {
