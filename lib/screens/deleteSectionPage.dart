@@ -216,12 +216,48 @@ class DeleteSectionState extends State {
       ),
       onPressed: () {
         if (hastaneSecildiMi && bolumSecildiMi) {
-          DelService().deleteSectionBySectionId(section, section.reference);
-          Navigator.pop(context, true);
+          alrtBolumSil(context);
         } else {
           alrtHospital(context, "Eksik bilgi var");
         }
       },
     );
+  }
+
+  void alrtBolumSil(BuildContext context) {
+    var alrtRandevu = AlertDialog(
+      title: Text(
+        " Bölüm ile birlikte bölüme kayıtlı bütün doktorlar ve randevularıda silinecektir. Devam etmek istiyor musunuz?",
+        style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+      ),
+      actions: <Widget>[
+        FlatButton(
+          child: Text("Hayır"),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        SizedBox(
+          width: 5.0,
+        ),
+        FlatButton(
+          child: Text(
+            "Evet",
+            textAlign: TextAlign.center,
+          ),
+          onPressed: () {
+            DelService().deleteSectionBySectionId(section, section.reference);
+            Navigator.pop(context);
+            Navigator.pop(context, true);
+          },
+        )
+      ],
+    );
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alrtRandevu;
+        });
   }
 }

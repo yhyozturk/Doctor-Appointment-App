@@ -147,12 +147,48 @@ class DeleteHospitalState extends State {
       ),
       onPressed: () {
         if (hastaneSecildiMi) {
-          DelService().deleteHospitalById(hastane);
-          Navigator.pop(context, true);
+          alrtHastaneSil(context);
         } else {
           alrtHospital(context, "Eksik veri var");
         }
       },
     );
+  }
+
+  void alrtHastaneSil(BuildContext context) {
+    var alrtRandevu = AlertDialog(
+      title: Text(
+        " Hastane ile birlikte hastaneye kayıtlı bütün bölümler, bölüm doktorları ve doktor randevularıda silinecektir. Devam etmek istiyor musunuz?",
+        style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+      ),
+      actions: <Widget>[
+        FlatButton(
+          child: Text("Hayır"),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        SizedBox(
+          width: 5.0,
+        ),
+        FlatButton(
+          child: Text(
+            "Evet",
+            textAlign: TextAlign.center,
+          ),
+          onPressed: () {
+            DelService().deleteHospitalById(hastane);
+            Navigator.pop(context);
+            Navigator.pop(context, true);
+          },
+        )
+      ],
+    );
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alrtRandevu;
+        });
   }
 }
