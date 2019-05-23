@@ -8,7 +8,6 @@ class User {
   String cinsiyet;
   String sifre;
   String dogumYeri;
-  var favoriDoktorlar = [];
 
   DocumentReference reference;
 
@@ -19,8 +18,7 @@ class User {
       this.dogumTarihi,
       this.cinsiyet,
       this.sifre,
-      this.dogumYeri,
-      this.favoriDoktorlar});
+      this.dogumYeri});
 
   User.fromJson(Map<String, dynamic> json) {
     kimlikNo = json['kimlikNo'];
@@ -30,7 +28,6 @@ class User {
     cinsiyet = json['cinsiyet'];
     sifre = json['sifre'];
     dogumYeri = json["dogumYeri"];
-    favoriDoktorlar = List.from(json["favoriDoktorlar"]);
   }
 
   User.fromMap(Map<String, dynamic> map, {this.reference})
@@ -40,8 +37,7 @@ class User {
         soyadi = map["soyad"],
         dogumYeri = map["dogumYeri"],
         dogumTarihi = map["dogumTarihi"],
-        cinsiyet = map["cinsiyet"],
-        favoriDoktorlar = List.from(map["favoriDoktorlar"]);
+        cinsiyet = map["cinsiyet"];
 
   User.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data, reference: snapshot.reference);
@@ -55,7 +51,6 @@ class User {
     data['cinsiyet'] = this.cinsiyet;
     data['sifre'] = this.sifre;
     data['dogumYeri'] = this.dogumYeri;
-    data['favoriDoktorlar'] = this.favoriDoktorlar;
     return data;
   }
 }
