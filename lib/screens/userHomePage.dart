@@ -90,8 +90,8 @@ class UserHomePageState extends State {
                           "T.C. Kimlik Numarası", kullanici.kimlikNo),
                       _buildAttributeRow(
                           "Cinsiyet", kullanici.cinsiyet.toString()),
-                      _buildAttributeRow("Doğum Yeri", kullanici.dogumYeri),
-                      _buildAttributeRow("Doğum Tarihi", kullanici.dogumTarihi),
+                      _buildAttributeRow("Doğum Yeri", kullanici.dogumYeri.toString()),
+                      _buildAttributeRow("Doğum Tarihi", kullanici.dogumTarihi.toString()),
                       SizedBox(
                         height: 30.0,
                       )
@@ -224,10 +224,9 @@ class UserHomePageState extends State {
           "Aktif Randevuları Listele",
           style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
         ),
-        onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BuildAppointmentList(kullanici))),
+        onPressed: () {
+          basicNavigator(BuildAppointmentList(kullanici), "İşlem Tamamlandı");
+        }
       ),
     );
   }

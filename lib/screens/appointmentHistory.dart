@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fast_turtle_v2/dbHelper/searchData.dart';
-import 'package:fast_turtle_v2/models/doktorModel.dart';
+import 'package:fast_turtle_v2/dbHelper/updateData.dart';
 import 'package:fast_turtle_v2/models/passiveAppoModel.dart';
 import 'package:fast_turtle_v2/models/userModel.dart';
 import 'package:flutter/material.dart';
@@ -15,9 +14,6 @@ class AppointmentHistory extends StatefulWidget {
 class _AppointmentHistoryState extends State<AppointmentHistory> {
   _AppointmentHistoryState(this.user);
   User user;
-  Doktor doktor = Doktor();
-
-  String gonder;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +27,10 @@ class _AppointmentHistoryState extends State<AppointmentHistory> {
 
   _buildStremBuilder(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection("tblRandevuGecmisi").snapshots(),
+      stream: Firestore.instance
+          .collection("tblRandevuGecmisi")
+          .where('hastaTCKN', isEqualTo: user.kimlikNo)
+          .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return LinearProgressIndicator();
@@ -53,12 +52,6 @@ class _AppointmentHistoryState extends State<AppointmentHistory> {
 
   _buildListItem(BuildContext context, DocumentSnapshot data) {
     final randevu = PassAppointment.fromSnapshot(data);
-    findDoktorName(randevu.doktorTCKN).then((value) {
-      setState(() {
-        gonder =
-            (doktor.adi.toString() + " " + doktor.soyadi.toString()).toString();
-      });
-    });
     return Padding(
       key: ValueKey(randevu.reference),
       padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -71,21 +64,71 @@ class _AppointmentHistoryState extends State<AppointmentHistory> {
           leading: CircleAvatar(
             child: Icon(Icons.healing),
           ),
-          title: Text(
-            gonder.toString(),
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+          title: Row(
+            children: <Widget>[
+              Text(
+                randevu.doktorAdi.toString(),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+              ),
+              SizedBox(
+                width: 3.0,
+              ),
+              Text(
+                randevu.doktorSoyadi.toString(),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+              ),
+            ],
           ),
           subtitle: Text(randevu.islemTarihi),
-          onTap: () {},
+          trailing: Text(
+            "Favorilere Ekle",
+            style:
+                TextStyle(fontWeight: FontWeight.bold, color: Colors.redAccent),
+          ),
+          onTap: () {
+            alrtFavEkle(context, randevu);
+          },
         ),
       ),
     );
   }
 
-  findDoktorName(String sentId) async {
-    await SearchService().searchDoctorById(sentId).then((QuerySnapshot docs) {
-      doktor = Doktor.fromMap(docs.documents[0].data);
-      gonder = (doktor.adi + " " + doktor.soyadi).toString();
-    });
+  void alrtFavEkle(BuildContext context, PassAppointment rand) {
+    var alrtRandevu = AlertDialog(
+      title: Text(
+        "Favorilere eklemek istediğinize emin misiniz?",
+        style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+      ),
+      actions: <Widget>[
+        FlatButton(
+          child: Text("Hayır"),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        SizedBox(
+          width: 5.0,
+        ),
+        FlatButton(
+          child: Text(
+            "Evet",
+            textAlign: TextAlign.center,
+          ),
+          onPressed: () {
+            UpdateService().updateUserFavList(
+                user.kimlikNo, (rand.doktorTCKN+" , "+rand.doktorAdi + " " + rand.doktorSoyadi));
+                UpdateService().updateDoktorFavCount(rand.doktorTCKN);
+            Navigator.pop(context);
+            Navigator.pop(context, true);
+          },
+        )
+      ],
+    );
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alrtRandevu;
+        });
   }
 }

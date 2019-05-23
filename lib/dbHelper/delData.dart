@@ -29,6 +29,13 @@ class DelService {
     });
   }
 
+  deleteActiveAppointment(ActiveAppointment randevu) {
+    Firestore.instance
+        .collection('tblAktifRandevu')
+        .document(randevu.reference.documentID)
+        .delete();
+  }
+
   deleteSectionBySectionId(Section bolum, var referans) {
     Firestore.instance
         .collection("tblBolum")
