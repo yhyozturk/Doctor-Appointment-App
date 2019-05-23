@@ -95,3 +95,10 @@ This is a school project written wiht Flutter.
  *Some changes on other pages,
  *TODO : Need to search about data transfer normalization
 
+ ## 23_May_2019 v1
+
+ *I fix the bugs from 17_May_2019 v2,
+ *All activeAppointment and pastAppointment methods work and stable,
+ *AppointmentTimesPage added,
+ *Some changes on other pages,
+

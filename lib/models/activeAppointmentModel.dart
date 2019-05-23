@@ -2,19 +2,34 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ActiveAppointment {
   String doktorTCKN;
+  String doktorAdi;
   String hastaTCKN;
+  String hastaAdi;
   int randId;
   String randevuTarihi;
   DocumentReference reference;
+  String doktorSoyadi;
+  String hastaSoyadi;
 
   ActiveAppointment(
-      {this.doktorTCKN, this.hastaTCKN, this.randId, this.randevuTarihi});
+      {this.doktorTCKN,
+      this.hastaTCKN,
+      this.randId,
+      this.randevuTarihi,
+      this.doktorAdi,
+      this.doktorSoyadi,
+      this.hastaAdi,
+      this.hastaSoyadi});
 
   ActiveAppointment.fromJson(Map<String, dynamic> json) {
     doktorTCKN = json['doktorTCKN'];
     hastaTCKN = json['hastaTCKN'];
     randId = json['randId'];
     randevuTarihi = json['randevuTarihi'];
+    doktorAdi = json['doktorAdi'];
+    hastaAdi = json['hastaAdi'];
+    doktorSoyadi = json['doktorSoyadi'];
+    hastaSoyadi = json['hastaSoyadi'];
   }
 
   Map<String, dynamic> toJson() {
@@ -23,6 +38,10 @@ class ActiveAppointment {
     data['hastaTCKN'] = this.hastaTCKN;
     data['randId'] = this.randId;
     data['randevuTarihi'] = this.randevuTarihi;
+    data['doktorAdi'] = this.doktorAdi;
+    data['hastaAdi'] = this.hastaAdi;
+    data['doktorSoyadi'] = this.doktorSoyadi;
+    data['hastaSoyadi'] = this.hastaSoyadi;
     return data;
   }
 
@@ -30,7 +49,11 @@ class ActiveAppointment {
       : doktorTCKN = map["doktorTCKN"],
         hastaTCKN = map["hastaTCKN"],
         randId = map["randId"],
-        randevuTarihi = map["randevuTarihi"];
+        randevuTarihi = map["randevuTarihi"],
+        doktorAdi = map["doktorAdi"],
+        hastaAdi = map["hastaAdi"],
+        doktorSoyadi = map["doktorSoyadi"],
+        hastaSoyadi = map["hastaSoyadi"];
 
   ActiveAppointment.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data, reference: snapshot.reference);
