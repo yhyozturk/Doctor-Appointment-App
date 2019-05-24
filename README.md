@@ -113,3 +113,9 @@ This is a school project written wiht Flutter.
  *closeAppointment function added for admin
  *Some changes on appointmentHistory, adminModel and all dbHelper functions
 
+ ## 24_May_2019 v2
+
+ *"Open/Close Appointment Hours" functions added for Admin,
+ *Some field added on addDoctorPage
+
+
