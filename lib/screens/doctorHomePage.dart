@@ -40,7 +40,7 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
     Size screenSize = MediaQuery.of(context).size;
     String hastaneAdi, bolumAdi;
     setState(() {
-      hastaneAdi = hastane.hastaneAdi.toString();
+      hastaneAdi = hastane.hastaneAdi;
       bolumAdi = bolum.bolumAdi;
     });
     return Scaffold(

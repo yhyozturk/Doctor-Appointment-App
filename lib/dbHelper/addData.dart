@@ -29,7 +29,10 @@ class AddService {
       'soyad': dr.soyadi,
       'sifre': dr.sifre,
       'bolumId': bolumu.bolumId,
-      'hastaneId': hastanesi.hastaneId
+      'hastaneId': hastanesi.hastaneId,
+      'cinsiyet': dr.cinsiyet,
+      'dogumTarihi': dr.dogumTarihi,
+      'dogumYeri': dr.dogumYeri
     });
   }
 

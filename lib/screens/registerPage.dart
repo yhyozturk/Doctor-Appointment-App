@@ -156,11 +156,11 @@ class RegisterPageState extends State with ValidationMixin {
               value: selectedGenders,
               onChanged: (String tiklanan) {
                 setState(() {
-                 if (tiklanan == null) {
+                  if (tiklanan == null) {
                     this.selectedGenders = "Kadın";
-                 }else{
-                   this.selectedGenders = tiklanan;
-                 }
+                  } else {
+                    this.selectedGenders = tiklanan;
+                  }
                   user.cinsiyet = selectedGenders;
                 });
               },
