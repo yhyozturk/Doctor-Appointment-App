@@ -72,6 +72,7 @@ class MakeAppointmentState extends State<MakeAppointment> {
                           doktorSecildiMi = false;
                           tarihSecildiMi = false;
                           hospitalNavigator(BuildHospitalList());
+                          
                         },
                       ),
                       SizedBox(height: 13.0),
@@ -82,6 +83,7 @@ class MakeAppointmentState extends State<MakeAppointment> {
                       RaisedButton(
                         child: Text("Bölüm Seçmek İçin Tıkla"),
                         onPressed: () {
+                          
                           if (hastaneSecildiMi) {
                             doktorSecildiMi = false;
                             drGoruntu = 0.0;
@@ -163,6 +165,7 @@ class MakeAppointmentState extends State<MakeAppointment> {
       hastaneSecildiMi = false;
     } else {
       hastaneSecildiMi = true;
+      alrtAppointmentForFav(context, hastane);
     }
   }
 
@@ -427,6 +430,72 @@ class MakeAppointmentState extends State<MakeAppointment> {
         builder: (BuildContext context) {
           return alertAppointment;
         });
+  }
+
+  //fav kısmı
+  void alrtAppointmentForFav(BuildContext context, Hospital hastane) {
+    if (hastaneSecildiMi) {
+      var alertAppointment = AlertDialog(
+        contentPadding: const EdgeInsets.fromLTRB(5.0, 50.0, 5.0, 50.0),
+        title: Text(
+          "Hastanenin Popüler Doktorları",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: Scaffold(body: _buildStremBuilderForFav(context, hastane)),
+      );
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alertAppointment;
+          });
+    }
+  }
+
+  _buildStremBuilderForFav(BuildContext context, Hospital hastane) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance
+          .collection("tblDoktor")
+          .where('hastaneId', isEqualTo: hastane.hastaneId)
+          .orderBy('favoriSayaci', descending: true)
+          .limit(5)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return LinearProgressIndicator();
+        } else {
+          return _buildBodyForFav(context, snapshot.data.documents);
+        }
+      },
+    );
+  }
+
+  Widget _buildBodyForFav(
+      BuildContext context, List<DocumentSnapshot> snapshot) {
+    return ListView(
+      padding: EdgeInsets.only(top: 15.0),
+      children: snapshot
+          .map<Widget>((data) => _buildListItemForFav(context, data))
+          .toList(),
+    );
+  }
+
+  _buildListItemForFav(BuildContext context, DocumentSnapshot data) {
+    final doktor = Doktor.fromSnapshot(data);
+    String gonder = (doktor.adi + " " + doktor.soyadi);
+    return Padding(
+      key: ValueKey(doktor.kimlikNo),
+      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Container(
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(10.0)),
+        child: ListTile(
+          title: Text(gonder),
+          onTap: () {},
+        ),
+      ),
+    );
   }
 
   _buildDoneButton() {
