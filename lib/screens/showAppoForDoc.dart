@@ -24,7 +24,7 @@ class _BuildAppointmentListState extends State<BuildAppointmentListForDoctor> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Aktif Randevularınız"),
+        title: Text("Bekleyen Randevularınız"),
       ),
       body: _buildStremBuilder(context),
     );
@@ -35,6 +35,11 @@ class _BuildAppointmentListState extends State<BuildAppointmentListForDoctor> {
       stream: Firestore.instance
           .collection("tblAktifRandevu")
           .where('doktorTCKN', isEqualTo: doktor.kimlikNo)
+          .where('randevuTarihi',
+              isLessThanOrEqualTo: (DateTime.now()
+                  .add(Duration(days: 30))
+                  .toString()
+                  .substring(0, 10)))
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
