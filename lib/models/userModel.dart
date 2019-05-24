@@ -4,9 +4,9 @@ class User {
   String kimlikNo;
   String adi;
   String soyadi;
+  String sifre;
   String dogumTarihi;
   String cinsiyet;
-  String sifre;
   String dogumYeri;
 
   DocumentReference reference;
@@ -15,9 +15,9 @@ class User {
       {this.kimlikNo,
       this.adi,
       this.soyadi,
+      this.sifre,
       this.dogumTarihi,
       this.cinsiyet,
-      this.sifre,
       this.dogumYeri});
 
   User.fromJson(Map<String, dynamic> json) {

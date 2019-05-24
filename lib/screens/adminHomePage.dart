@@ -1,5 +1,4 @@
 import 'package:fast_turtle_v2/models/adminModel.dart';
-import 'package:fast_turtle_v2/screens/addAdminPage.dart';
 import 'package:fast_turtle_v2/screens/addDoctorPage.dart';
 import 'package:fast_turtle_v2/screens/addHospitalPage.dart';
 import 'package:fast_turtle_v2/screens/addSectionPage.dart';
@@ -7,6 +6,7 @@ import 'package:fast_turtle_v2/screens/deleteDoctorPage.dart';
 import 'package:fast_turtle_v2/screens/deleteHospitalPage.dart';
 import 'package:fast_turtle_v2/screens/deleteSectionPage.dart';
 import 'package:fast_turtle_v2/screens/closeAppointmentPage.dart';
+import 'package:fast_turtle_v2/screens/openAppointmentPage.dart';
 import 'package:fast_turtle_v2/screens/updateDoctorPage.dart';
 import 'package:fast_turtle_v2/screens/updateHospitalPage.dart';
 import 'package:fast_turtle_v2/screens/updateSectionPage.dart';
@@ -279,7 +279,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
 
               break;
             case 10:
-              basicNavigator(AddAdmin());
+              basicNavigator(OpenAppointment(_admin));
 
               break;
             case 11:

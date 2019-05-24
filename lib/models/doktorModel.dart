@@ -8,21 +8,25 @@ class Doktor {
   int bolumId;
   int hastaneId;
   var randevular = [];
-  var calismaSaatleri = [];
   int favoriSayaci;
+  String dogumTarihi;
+  String cinsiyet;
+  String dogumYeri;
 
   DocumentReference reference;
 
-  Doktor({
-    this.kimlikNo,
-    this.adi,
-    this.soyadi,
-    this.sifre,
-    this.bolumId,
-    this.hastaneId,
-    this.randevular,
-    this.favoriSayaci
-  });
+  Doktor(
+      {this.kimlikNo,
+      this.adi,
+      this.soyadi,
+      this.sifre,
+      this.bolumId,
+      this.hastaneId,
+      this.randevular,
+      this.favoriSayaci,
+      this.dogumTarihi,
+      this.cinsiyet,
+      this.dogumYeri});
 
   Doktor.fromJson(Map<String, dynamic> json) {
     kimlikNo = json['kimlikNo'];
@@ -33,6 +37,9 @@ class Doktor {
     hastaneId = json['hastaneId'];
     randevular = List.from(json['randevular']);
     favoriSayaci = json['favoriSayaci'];
+    dogumTarihi = json['dogumTarihi'];
+    cinsiyet = json['cinsiyet'];
+    dogumYeri = json["dogumYeri"];
   }
 
   Map<String, dynamic> toJson() {
@@ -45,6 +52,9 @@ class Doktor {
     data['hastaneId'] = this.hastaneId;
     data['randevular'] = this.randevular;
     data['favoriSayaci'] = this.favoriSayaci;
+    data['dogumTarihi'] = this.dogumTarihi;
+    data['cinsiyet'] = this.cinsiyet;
+    data['dogumYeri'] = this.dogumYeri;
     return data;
   }
 
@@ -55,9 +65,11 @@ class Doktor {
         soyadi = map["soyad"],
         bolumId = map["bolumId"],
         hastaneId = map["hastaneId"],
-        randevular =List.from( map["randevular"]),
-        favoriSayaci = map["favoriSayaci"];
-        
+        randevular = List.from(map["randevular"]),
+        favoriSayaci = map["favoriSayaci"],
+        dogumYeri = map["dogumYeri"],
+        dogumTarihi = map["dogumTarihi"],
+        cinsiyet = map["cinsiyet"];
 
   Doktor.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data, reference: snapshot.reference);

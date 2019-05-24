@@ -26,6 +26,21 @@ class AddDoctorState extends State with ValidationMixin {
   double goruntu = 0.0;
   final formKey = GlobalKey<FormState>();
 
+  var genders = ["Kadın", "Erkek"];
+  String selectedGenders = "Kadın";
+  var dogumTarihi;
+  var raisedButtonText = "Tıkla ve Seç";
+
+  Future<Null> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1920),
+      lastDate: DateTime.now(),
+    );
+    dogumTarihi = picked;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,6 +63,9 @@ class AddDoctorState extends State with ValidationMixin {
                       _passwordField(),
                       _nameField(),
                       _surnameField(),
+                      placeofBirthField(),
+                      genderChoose(),
+                      dateOfBirth(),
                       SizedBox(
                         height: 13.0,
                       ),
@@ -139,6 +157,74 @@ class AddDoctorState extends State with ValidationMixin {
       onSaved: (String value) {
         doktor.soyadi = value;
       },
+    );
+  }
+
+  Widget placeofBirthField() {
+    return TextFormField(
+      decoration: InputDecoration(labelText: "Doğum Yeri",labelStyle: TextStyle(fontWeight: FontWeight.bold)),
+      onSaved: (String value) {
+        doktor.dogumYeri = value;
+      },
+    );
+  }
+
+  Widget genderChoose() {
+    return Container(
+        padding: EdgeInsets.only(top: 13.0),
+        child: Row(
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(right: 25.0),
+              child: Text(
+                "Cinsiyet: ",
+                style: TextStyle(fontSize: 19.0),
+              ),
+            ),
+            DropdownButton<String>(
+              items: genders.map((String cinsiyetler) {
+                return DropdownMenuItem<String>(
+                  value: cinsiyetler,
+                  child: Text(cinsiyetler),
+                );
+              }).toList(),
+              value: selectedGenders,
+              onChanged: (String tiklanan) {
+                setState(() {
+                  if (tiklanan == null) {
+                    this.selectedGenders = "Kadın";
+                  } else {
+                    this.selectedGenders = tiklanan;
+                  }
+                  doktor.cinsiyet = selectedGenders;
+                });
+              },
+            ),
+          ],
+        ));
+  }
+
+  Widget dateOfBirth() {
+    return Container(
+      padding: EdgeInsets.only(top: 5.0),
+      child: Row(
+        children: <Widget>[
+          Text(
+            "Doğum Tarihi: ",
+            style: TextStyle(fontSize: 19.0),
+          ),
+          RaisedButton(
+            child: Text(raisedButtonText),
+            onPressed: () {
+              _selectDate(context).then((result) => setState(() {
+                    raisedButtonText = dogumTarihi.toString().substring(0, 10);
+                    doktor.dogumTarihi =
+                        dogumTarihi.toString().substring(0, 10);
+                  }));
+            },
+          )
+        ],
+      ),
     );
   }
 
