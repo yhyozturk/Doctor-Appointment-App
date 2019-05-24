@@ -23,6 +23,7 @@ class AddService {
   }
 
   void saveDoctor(Doktor dr, Section bolumu, Hospital hastanesi) {
+    var randevular = [];
     Firestore.instance.collection('tblDoktor').document().setData({
       'kimlikNo': dr.kimlikNo,
       'ad': dr.adi,
@@ -33,7 +34,8 @@ class AddService {
       'cinsiyet': dr.cinsiyet,
       'dogumTarihi': dr.dogumTarihi,
       'dogumYeri': dr.dogumYeri,
-      'favoriSayaci' : 0
+      'favoriSayaci' : 0,
+      'randevular' : randevular
     });
   }
 

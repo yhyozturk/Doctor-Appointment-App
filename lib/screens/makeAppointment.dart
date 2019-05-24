@@ -20,6 +20,8 @@ class MakeAppointment extends StatefulWidget {
 }
 
 class MakeAppointmentState extends State<MakeAppointment> {
+  bool control1 = false;
+
   MakeAppointmentState(this.kullanici);
 
   bool hastaneSecildiMi = false;
@@ -49,107 +51,108 @@ class MakeAppointmentState extends State<MakeAppointment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Randevu Al",
-          style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
+        appBar: AppBar(
+          title: Text(
+            "Randevu Al",
+            style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
+          ),
         ),
-      ),
-      body: Column(
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(top: 20.0, left: 9.0, right: 9.0),
-            child: Form(
-              child: Column(
-                children: <Widget>[
-                  RaisedButton(
-                    child: Text("Hastane Seçmek İçin Tıkla"),
-                    onPressed: () {
-                      bolumSecildiMi = false;
-                      doktorSecildiMi = false;
-                      tarihSecildiMi = false;
-                      hospitalNavigator(BuildHospitalList());
-                    },
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.only(top: 20.0, left: 9.0, right: 9.0),
+                child: Form(
+                  child: Column(
+                    children: <Widget>[
+                      RaisedButton(
+                        child: Text("Hastane Seçmek İçin Tıkla"),
+                        onPressed: () {
+                          bolumSecildiMi = false;
+                          doktorSecildiMi = false;
+                          tarihSecildiMi = false;
+                          hospitalNavigator(BuildHospitalList());
+                        },
+                      ),
+                      SizedBox(height: 13.0),
+                      showSelectedHospital(hastaneSecildiMi),
+                      SizedBox(
+                        height: 30.0,
+                      ),
+                      RaisedButton(
+                        child: Text("Bölüm Seçmek İçin Tıkla"),
+                        onPressed: () {
+                          if (hastaneSecildiMi) {
+                            doktorSecildiMi = false;
+                            drGoruntu = 0.0;
+                            tarihSecildiMi = false;
+                            sectionNavigator(BuildSectionList(hastane));
+                          } else {
+                            alrtHospital(
+                                context, "Hastane seçmeden bölüm seçemezsiniz");
+                          }
+                        },
+                      ),
+                      SizedBox(
+                        height: 16.0,
+                      ),
+                      _showSelectedSection(bolumSecildiMi),
+                      SizedBox(
+                        height: 30.0,
+                      ),
+                      RaisedButton(
+                        child: Text("Doktor Seçmek İçin Tıkla"),
+                        onPressed: () {
+                          if (hastaneSecildiMi && bolumSecildiMi) {
+                            doctorNavigator(BuildDoctorList(section, hastane));
+                          } else {
+                            alrtHospital(context,
+                                "Hastane ve bölüm seçmeden doktor seçemezsiniz");
+                          }
+                        },
+                      ),
+                      SizedBox(
+                        height: 16.0,
+                      ),
+                      showSelectedDoctor(doktorSecildiMi),
+                      SizedBox(
+                        height: 25.0,
+                      ),
+                      dateOfAppointment(),
+                      SizedBox(
+                        height: 16.0,
+                      ),
+                      RaisedButton(
+                        child: Text("Randevu Saati Seçmek İçin Tıkla"),
+                        onPressed: () {
+                          if (randevuTarihi != null &&
+                              hastaneSecildiMi &&
+                              bolumSecildiMi &&
+                              doktorSecildiMi) {
+                            basicNavigator(AppointmentTimes(
+                                randevuTarihi.toString(), doktor));
+                            tarihSecildiMi = true;
+                          } else {
+                            alrtHospital(context,
+                                "Yukarıdaki seçimler tamamlanmadan saat seçimine geçilemez");
+                          }
+                        },
+                      ),
+                      SizedBox(
+                        height: 16.0,
+                      ),
+                      showSelectedDate(tarihSecildiMi),
+                      SizedBox(
+                        height: 16.0,
+                      ),
+                      _buildDoneButton()
+                    ],
                   ),
-                  SizedBox(height: 13.0),
-                  showSelectedHospital(hastaneSecildiMi),
-                  SizedBox(
-                    height: 30.0,
-                  ),
-                  RaisedButton(
-                    child: Text("Bölüm Seçmek İçin Tıkla"),
-                    onPressed: () {
-                      if (hastaneSecildiMi) {
-                        doktorSecildiMi = false;
-                        drGoruntu = 0.0;
-                        tarihSecildiMi = false;
-                        sectionNavigator(BuildSectionList(hastane));
-                      } else {
-                        alrtHospital(
-                            context, "Hastane seçmeden bölüm seçemezsiniz");
-                      }
-                    },
-                  ),
-                  SizedBox(
-                    height: 16.0,
-                  ),
-                  _showSelectedSection(bolumSecildiMi),
-                  SizedBox(
-                    height: 30.0,
-                  ),
-                  RaisedButton(
-                    child: Text("Doktor Seçmek İçin Tıkla"),
-                    onPressed: () {
-                      if (hastaneSecildiMi && bolumSecildiMi) {
-                        doctorNavigator(BuildDoctorList(section, hastane));
-                      } else {
-                        alrtHospital(context,
-                            "Hastane ve bölüm seçmeden doktor seçemezsiniz");
-                      }
-                    },
-                  ),
-                  SizedBox(
-                    height: 16.0,
-                  ),
-                  showSelectedDoctor(doktorSecildiMi),
-                  SizedBox(
-                    height: 25.0,
-                  ),
-                  dateOfAppointment(),
-                  SizedBox(
-                    height: 16.0,
-                  ),
-                  RaisedButton(
-                    child: Text("Randevu Saati Seçmek İçin Tıkla"),
-                    onPressed: () {
-                      if (randevuTarihi != null &&
-                          hastaneSecildiMi &&
-                          bolumSecildiMi &&
-                          doktorSecildiMi) {
-                        basicNavigator(
-                            AppointmentTimes(randevuTarihi.toString(), doktor));
-                        tarihSecildiMi = true;
-                      } else {
-                        alrtHospital(context,
-                            "Yukarıdaki seçimler tamamlanmadan saat seçimine geçilemez");
-                      }
-                    },
-                  ),
-                  SizedBox(
-                    height: 16.0,
-                  ),
-                  showSelectedDate(tarihSecildiMi),
-                  SizedBox(
-                    height: 16.0,
-                  ),
-                  _buildDoneButton()
-                ],
-              ),
-            ),
-          )
-        ],
-      ),
-    );
+                ),
+              )
+            ],
+          ),
+        ));
   }
 
   void hospitalNavigator(dynamic page) async {
@@ -443,31 +446,45 @@ class MakeAppointmentState extends State<MakeAppointment> {
                 SearchService()
                     .searchActiveAppointmentsByHastaTCKN(kullanici.kimlikNo)
                     .then((QuerySnapshot docs) {
-                  for (var i = 0; i < docs.documents.length; i++) {
-                    ActiveAppointment rand =
-                        ActiveAppointment.fromMap(docs.documents[i].data);
-                    if (rand.randevuTarihi.contains(saatTarihBirlesim)) {
-                      alrtHospital(context,
-                          "Aynı gün ve saatte 2 farklı doktordan randevunuz olamaz");
-                    } else {
-                      SearchService()
-                          .searchActiveAppointmentsWithHastaTCKNAndDoctorTCKN(
-                              kullanici.kimlikNo, doktor.kimlikNo)
-                          .then((QuerySnapshot docs) {
-                        for (var i = 0; i < docs.documents.length; i++) {
+                  if (docs.documents.isNotEmpty) {
+                    for (var i = 0; i < docs.documents.length; i++) {
+                      ActiveAppointment rand =
+                          ActiveAppointment.fromMap(docs.documents[i].data);
+                      if (rand.randevuTarihi.contains(saatTarihBirlesim)) {
+                        alrtHospital(context,
+                            "Aynı gün ve saatte 2 farklı doktordan randevunuz olamaz");
+                        break;
+                      } else {
+                        control1 = true;
+                      }
+                    }
+                  } else {
+                    control1 = true;
+                  }
+                  if (control1) {
+                    SearchService()
+                        .searchActiveAppointmentsWithHastaTCKNAndDoctorTCKN(
+                            kullanici.kimlikNo, doktor.kimlikNo)
+                        .then((QuerySnapshot docs) {
+                      if (docs.documents.isNotEmpty) {
+                        for (var i = 0; i <= docs.documents.length; i++) {
                           ActiveAppointment rand =
                               ActiveAppointment.fromMap(docs.documents[i].data);
                           if (rand.randevuTarihi.contains(
                               randevuTarihi.toString().substring(0, 10))) {
                             alrtHospital(context,
                                 "Gün içerisinde aynı doktordan 2 randevunuz olamaz");
+                            break;
                           } else {
                             alrtAppointment(context);
                             doktor.randevular.add(saatTarihBirlesim);
                           }
                         }
-                      });
-                    }
+                      } else {
+                        alrtAppointment(context);
+                        doktor.randevular.add(saatTarihBirlesim);
+                      }
+                    });
                   }
                 });
               } else {
