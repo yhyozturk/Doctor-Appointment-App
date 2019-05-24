@@ -32,7 +32,8 @@ class AddService {
       'hastaneId': hastanesi.hastaneId,
       'cinsiyet': dr.cinsiyet,
       'dogumTarihi': dr.dogumTarihi,
-      'dogumYeri': dr.dogumYeri
+      'dogumYeri': dr.dogumYeri,
+      'favoriSayaci' : 0
     });
   }
 
