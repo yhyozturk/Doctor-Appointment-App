@@ -1,5 +1,5 @@
 # Getting Started
-This is a school project written wiht Flutter.
+This project written wiht Flutter.
 
 ## Initial commit includes
 
