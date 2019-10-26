@@ -6,7 +6,8 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.2'
-        classpath 'com.google.gms:google-services:4.0.1'
+        YOU MUST ADD YOUR FİREBASE ACCOUNT CONNECTION BELOW AND DELETE THİS CENTENCE...
+        classpath 'HERE'
     }
 }
 
