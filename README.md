@@ -1,5 +1,6 @@
 # Getting Started
 This project written wiht Flutter.
+!!YOU SHOULD ADD YOUR OWN FİREBASE ACCOUNT WHEN YOU FORK OR DOWNLOAD THE PROJECT, OTHERWISE APP DOES NOT WORK!!
 
 ## Initial commit includes
 
