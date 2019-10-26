@@ -6,7 +6,7 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.2'
-        //TODO: YOU SHOULD ADD YOUR FİREBASE ACCOUNT CONNECTION BELOW AND DELETE THİS COMMENT...
+        YOU MUST ADD YOUR FİREBASE ACCOUNT CONNECTION BELOW AND DELETE THİS CENTENCE...
         classpath 'HERE'
     }
 }
